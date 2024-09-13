@@ -8,7 +8,7 @@ class LocationWidget extends StatefulWidget {
 }
 
 class _LocationWidgetState extends State<LocationWidget> {
-  loc.LocationData? _currentLocation;
+  loc.LocationData? currentLocation;
   String _address = "Fetching location...";
 
   @override
@@ -51,7 +51,7 @@ class _LocationWidgetState extends State<LocationWidget> {
     Placemark place = placemarks[0];
 
     setState(() {
-      _currentLocation = locationData;
+      currentLocation = locationData;
       _address = "${place.locality}, ${place.country}";
     });
   }

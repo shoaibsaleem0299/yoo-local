@@ -71,7 +71,7 @@ class _CategoryViewState extends State<CategoryView> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Category'),
+        title: const Text('Categories'),
         backgroundColor: Colors.white,
         elevation: 0.5,
         leading: IconButton(

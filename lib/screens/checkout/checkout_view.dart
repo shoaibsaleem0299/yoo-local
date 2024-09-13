@@ -204,7 +204,7 @@ class CheckoutView extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomButtons() {
+  Widget buildBottomButtons() {
     return Align(
       alignment: Alignment.center,
       child: ElevatedButton(

@@ -1,10 +1,7 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
 import 'package:yoo_local/screens/home/widgets/featured_product.dart';
 import 'package:yoo_local/screens/home/widgets/section_header.dart';
-import 'package:yoo_local/widgets/app_button.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final String name;
