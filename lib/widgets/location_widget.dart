@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:location/location.dart' as loc;
 import 'package:geocoding/geocoding.dart';
+import 'package:yoo_local/ui_fuctionality/local_data.dart';
 
 class LocationWidget extends StatefulWidget {
   @override
@@ -14,7 +15,22 @@ class _LocationWidgetState extends State<LocationWidget> {
   @override
   void initState() {
     super.initState();
-    _getLocation();
+    _checkStoredLocation();
+  }
+
+  Future<void> _checkStoredLocation() async {
+    String? city = await LocalData.getString("city");
+
+    if (city == null) {
+      // If no city is stored, get the current location
+      await _getLocation();
+    } else {
+      // If city is stored, display it
+      String? country = await LocalData.getString("country");
+      setState(() {
+        _address = "$city, $country";
+      });
+    }
   }
 
   Future<void> _getLocation() async {
@@ -48,6 +64,10 @@ class _LocationWidgetState extends State<LocationWidget> {
       locationData.longitude!,
     );
     Placemark place = placemarks[0];
+
+    // Save city and country in SharedPreferences
+    await LocalData.addString("city", place.locality!);
+    await LocalData.addString("country", place.country!);
 
     setState(() {
       currentLocation = locationData;
