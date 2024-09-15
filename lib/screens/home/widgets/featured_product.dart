@@ -44,7 +44,6 @@ class FeaturedProduct extends StatelessWidget {
         'description':
             'Budweiser is a medium-bodied American Lager with a slightly bitter taste...',
       },
-      // Add more products if needed
     ];
 
     return Padding(

@@ -6,7 +6,7 @@ class ProductCard extends StatelessWidget {
   final String price;
   final String image;
   final bool isFavorite;
-  final VoidCallback onTap; // Add this line
+  final VoidCallback onTap;
 
   const ProductCard({
     super.key,
@@ -14,7 +14,7 @@ class ProductCard extends StatelessWidget {
     required this.price,
     required this.image,
     required this.isFavorite,
-    required this.onTap, // Add this line
+    required this.onTap,
   });
 
   @override

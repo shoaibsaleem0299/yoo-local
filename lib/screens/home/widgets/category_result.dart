@@ -11,9 +11,11 @@ class CategoryResultScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(categoryTitle),
-        backgroundColor: Colors.blue, // Customize as needed
+        centerTitle: true,
       ),
       body: Center(
         child: Text(

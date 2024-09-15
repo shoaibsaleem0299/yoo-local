@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:yoo_local/models/data.dart';
+import 'package:yoo_local/widgets/product_card.dart';
+import 'package:yoo_local/widgets/product_view.dart';
 
 class CategoryView extends StatefulWidget {
   const CategoryView({super.key});
@@ -8,63 +11,7 @@ class CategoryView extends StatefulWidget {
 }
 
 class _CategoryViewState extends State<CategoryView> {
-  // List of available colors
-
-  // Mock data as an array of maps (could later be fetched from an API)
-  List<Map<String, String>> categories = [
-    {
-      "name": "Wine",
-      "image": "https://cdn-icons-png.flaticon.com/512/657/657261.png"
-    },
-    {
-      "name": "Beer",
-      "image": "https://cdn-icons-png.flaticon.com/512/657/657261.png"
-    },
-    {
-      "name": "Spirits",
-      "image": "https://cdn-icons-png.flaticon.com/512/657/657261.png"
-    },
-    {
-      "name": "Chocolates",
-      "image": "https://cdn-icons-png.flaticon.com/512/657/657261.png"
-    },
-    {
-      "name": "Crips",
-      "image": "https://cdn-icons-png.flaticon.com/512/657/657261.png"
-    },
-    {
-      "name": "Biscuits",
-      "image": "https://cdn-icons-png.flaticon.com/512/657/657261.png"
-    },
-    {
-      "name": "Snacks",
-      "image": "https://cdn-icons-png.flaticon.com/512/657/657261.png"
-    },
-    {
-      "name": "Soft Drinks",
-      "image": "https://cdn-icons-png.flaticon.com/512/657/657261.png"
-    },
-    {
-      "name": "Extra1",
-      "image": "https://cdn-icons-png.flaticon.com/512/657/657261.png"
-    },
-    {
-      "name": "Extra2",
-      "image": "https://cdn-icons-png.flaticon.com/512/657/657261.png"
-    },
-    {
-      "name": "Extra3",
-      "image": "https://cdn-icons-png.flaticon.com/512/657/657261.png"
-    },
-    {
-      "name": "Extra4",
-      "image": "https://cdn-icons-png.flaticon.com/512/657/657261.png"
-    },
-    {
-      "name": "Extra5",
-      "image": "https://cdn-icons-png.flaticon.com/512/657/657261.png"
-    },
-  ];
+  List<Map<String, dynamic>> categories = SampleData.categories;
 
   @override
   Widget build(BuildContext context) {
@@ -99,8 +46,8 @@ class _CategoryViewState extends State<CategoryView> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ResultScreen(
-                      name: category['name']!,
-                      color: const Color.fromARGB(255, 241, 212, 170),
+                      products: category['data'],
+                      name: category['name'],
                     ),
                   ),
                 );
@@ -152,16 +99,13 @@ class CategoryCard extends StatelessWidget {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(left: 42),
-                child: FadeInImage.assetNetwork(
-                  placeholder: 'assets/placeholder.png',
-                  image: imageUrl,
+                child: Image.network(
+                  imageUrl,
                   width: 70,
                   fit: BoxFit.contain,
-                  imageErrorBuilder: (context, error, stackTrace) {
-                    return Image.asset(
-                      'assets/error_image.png', // Path to a local error image
-                      fit: BoxFit.contain,
-                    );
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.broken_image,
+                        color: Colors.grey, size: 50);
                   },
                 ),
               ),
@@ -175,31 +119,46 @@ class CategoryCard extends StatelessWidget {
 }
 
 class ResultScreen extends StatelessWidget {
+  final List<Map<String, dynamic>> products;
   final String name;
-  final Color color;
 
-  const ResultScreen({
-    required this.name,
-    required this.color,
-  });
+  const ResultScreen({required this.products, required this.name});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         title: Text(name),
-        backgroundColor: color,
       ),
-      body: Center(
-        child: Text(
-          'Results for $name',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: color,
-          ),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(10),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: 0.75,
         ),
+        itemCount: products.length,
+        itemBuilder: (context, index) {
+          final product = products[index];
+          return ProductCard(
+            name: product['name'],
+            price: product['price'],
+            image: product['image'],
+            isFavorite: product['isFavorite'],
+            onTap: () {
+              ProductDetailScreen(
+                name: product['name'],
+                price: product['price'],
+                image: product['image'],
+                description: product['description'],
+                quatity: 1,
+              );
+            },
+          );
+        },
       ),
     );
   }
