@@ -20,7 +20,6 @@ class _LocationWidgetState extends State<LocationWidget> {
   Future<void> _getLocation() async {
     loc.Location location = loc.Location();
 
-    // Check if location services are enabled
     bool serviceEnabled;
     serviceEnabled = await location.serviceEnabled();
     if (!serviceEnabled) {
