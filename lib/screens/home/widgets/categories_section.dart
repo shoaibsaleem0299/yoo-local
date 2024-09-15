@@ -9,20 +9,161 @@ class CategoriesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> categories = [
+    final List<Map<String, dynamic>> categories = [
       {
         'title': 'Wines',
         'image': 'https://cdn-icons-png.flaticon.com/512/657/657261.png',
+        "data": [
+          {
+            'name': 'Corona Extra Beer',
+            'price': '£1.59',
+            'image':
+                'https://www.gomarket.com.ng/wp-content/uploads/2023/05/2021-08-26-61279756194c8.png',
+            'isFavorite': true,
+            'description':
+                'Corona Extra is a light, crisp Mexican Lager with a pale straw color...',
+          },
+          {
+            'name': 'Cabernet Sauvignon',
+            'price': '£10.99',
+            'image':
+                'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/hc7/h36/8829289787422.png',
+            'isFavorite': false,
+            'description':
+                'A full-bodied red wine with notes of dark fruit and a smooth finish...',
+          },
+          {
+            'name': 'Pinot Noir',
+            'price': '£12.50',
+            'image':
+                'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h22/h56/12307190726686.png',
+            'isFavorite': true,
+            'description':
+                'This Pinot Noir offers a rich flavor with a balance of ripe fruit and subtle earthiness...',
+          },
+          {
+            'name': 'Chardonnay',
+            'price': '£8.75',
+            'image':
+                'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h6c/h25/12208472629214.png',
+            'isFavorite': false,
+            'description':
+                'A popular white wine, Chardonnay brings a fresh, citrusy taste with hints of oak...',
+          },
+          {
+            'name': 'Merlot',
+            'price': '£11.25',
+            'image':
+                'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h48/hba/8800786309150.png',
+            'isFavorite': true,
+            'description':
+                'Merlot is a smooth, medium-bodied red with flavors of black cherry and plum...',
+          },
+        ],
       },
       {
         'title': 'Beers',
         'image':
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRobRe99qQP9ROENUffatFxgDPFnigcXiKr4A&s',
+        "data": [
+          {
+            'name': 'Corona Extra Beer',
+            'price': '£1.59',
+            'image':
+                'https://www.gomarket.com.ng/wp-content/uploads/2023/05/2021-08-26-61279756194c8.png',
+            'isFavorite': true,
+            'description':
+                'Corona Extra is a light, crisp Mexican Lager with a pale straw color...',
+          },
+          {
+            'name': 'Cabernet Sauvignon',
+            'price': '£10.99',
+            'image':
+                'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/hc7/h36/8829289787422.png',
+            'isFavorite': false,
+            'description':
+                'A full-bodied red wine with notes of dark fruit and a smooth finish...',
+          },
+          {
+            'name': 'Pinot Noir',
+            'price': '£12.50',
+            'image':
+                'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h22/h56/12307190726686.png',
+            'isFavorite': true,
+            'description':
+                'This Pinot Noir offers a rich flavor with a balance of ripe fruit and subtle earthiness...',
+          },
+          {
+            'name': 'Chardonnay',
+            'price': '£8.75',
+            'image':
+                'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h6c/h25/12208472629214.png',
+            'isFavorite': false,
+            'description':
+                'A popular white wine, Chardonnay brings a fresh, citrusy taste with hints of oak...',
+          },
+          {
+            'name': 'Merlot',
+            'price': '£11.25',
+            'image':
+                'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h48/hba/8800786309150.png',
+            'isFavorite': true,
+            'description':
+                'Merlot is a smooth, medium-bodied red with flavors of black cherry and plum...',
+          },
+        ],
       },
       {
         'title': 'Spirits',
         'image':
             'https://cdn.icon-icons.com/icons2/3050/PNG/512/line_soda_sprite_icon_189443.png',
+        "data": [
+          {
+            'name': 'Corona Extra Beer',
+            'price': '£1.59',
+            'image':
+                'https://www.gomarket.com.ng/wp-content/uploads/2023/05/2021-08-26-61279756194c8.png',
+            'isFavorite': true,
+            'description':
+                'Corona Extra is a light, crisp Mexican Lager with a pale straw color...',
+          },
+          {
+            'name': 'Cabernet Sauvignon',
+            'price': '£10.99',
+            'image':
+                'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/hc7/h36/8829289787422.png',
+            'isFavorite': false,
+            'description':
+                'A full-bodied red wine with notes of dark fruit and a smooth finish...',
+          },
+          {
+            'name': 'Pinot Noir',
+            'price': '£12.50',
+            'image':
+                'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h22/h56/12307190726686.png',
+            'isFavorite': true,
+            'description':
+                'This Pinot Noir offers a rich flavor with a balance of ripe fruit and subtle earthiness...',
+          },
+          {
+            'name': 'Chardonnay',
+            'price': '£8.75',
+            'image':
+                'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h6c/h25/12208472629214.png',
+            'isFavorite': false,
+            'description':
+                'A popular white wine, Chardonnay brings a fresh, citrusy taste with hints of oak...',
+          },
+          {
+            'name': 'Merlot',
+            'price': '£11.25',
+            'image':
+                'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h48/hba/8800786309150.png',
+            'isFavorite': true,
+            'description':
+                'Merlot is a smooth, medium-bodied red with flavors of black cherry and plum...',
+          },
+        ],
       },
     ];
 
@@ -37,6 +178,7 @@ class CategoriesSection extends StatelessWidget {
               return custom_category_card.CategoryCard(
                 title: category['title']!,
                 imageUrl: category['image']!,
+                products: category['data'],
               );
             }).toList(),
           ),
@@ -54,7 +196,8 @@ class CategoriesSection extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => category_view.CategoryView()));
+                    builder: (context) => category_view.CategoryView(),
+                  ));
             },
             child: Text(
               "View All",

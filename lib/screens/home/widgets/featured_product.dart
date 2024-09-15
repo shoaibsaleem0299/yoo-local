@@ -63,7 +63,6 @@ class FeaturedProduct extends StatelessWidget {
                 image: product['image'],
                 isFavorite: product['isFavorite'],
                 onTap: () {
-                  // Navigate to ProductDetailScreen with product details
                   Navigator.push(
                     context,
                     MaterialPageRoute(

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
-import 'package:yoo_local/screens/home/widgets/category_result.dart';
+import 'package:yoo_local/screens/category/category_view.dart';
 
 class CategoryCard extends StatelessWidget {
   final String title;
   final String imageUrl;
+  final List<Map<String, dynamic>> products;
 
   const CategoryCard({
     Key? key,
     required this.title,
     required this.imageUrl,
+    required this.products,
   }) : super(key: key);
 
   @override
@@ -19,9 +21,7 @@ class CategoryCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CategoryResultScreen(
-              categoryTitle: title,
-            ),
+            builder: (context) => ResultScreen(products: products, name: title),
           ),
         );
       },

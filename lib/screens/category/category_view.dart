@@ -149,12 +149,17 @@ class ResultScreen extends StatelessWidget {
             image: product['image'],
             isFavorite: product['isFavorite'],
             onTap: () {
-              ProductDetailScreen(
-                name: product['name'],
-                price: product['price'],
-                image: product['image'],
-                description: product['description'],
-                quatity: 1,
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductDetailScreen(
+                    name: product['name'],
+                    price: product['price'],
+                    image: product['image'],
+                    description: product['description'],
+                    quatity: 1,
+                  ),
+                ),
               );
             },
           );

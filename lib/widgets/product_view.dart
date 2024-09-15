@@ -24,128 +24,147 @@ class ProductDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(name),
-        actions: [
-          IconButton(icon: Icon(Icons.search), onPressed: () {}),
-        ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Divider(color: AppColors.primaryColor),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Divider(color: AppColors.primaryColor),
+            ),
             SizedBox(height: 12),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Image.network(
-                  image,
-                  height: 120,
-                  width: 120,
-                  fit: BoxFit.cover,
-                ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        name,
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(price,
-                          style: TextStyle(fontSize: 18, color: Colors.orange)),
-                      SizedBox(height: 8),
-                      Text(
-                        description,
-                        style: TextStyle(fontSize: 16),
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.network(
+                    image,
+                    height: 120,
+                    width: 120,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(
+                        Icons.broken_image,
+                        size: 40,
+                        color: Colors.grey,
+                      );
+                    },
                   ),
-                ),
-              ],
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(price,
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.orange)),
+                        SizedBox(height: 8),
+                        Text(
+                          description,
+                          style: TextStyle(fontSize: 16),
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: 16),
             // Quantity and Buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.remove_circle,
-                        color: AppColors.primaryColor,
-                        size: 26,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.remove_circle,
+                          color: AppColors.primaryColor,
+                          size: 26,
+                        ),
+                        onPressed: () {
+                          // Decrease quantity functionality here
+                        },
                       ),
-                      onPressed: () {
-                        // Decrease quantity functionality here
-                      },
-                    ),
-                    Text(
-                      quatity.toString(),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                      Text(
+                        quatity.toString(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.add_circle,
-                        color: AppColors.primaryColor,
-                        size: 26,
+                      IconButton(
+                        icon: Icon(
+                          Icons.add_circle,
+                          color: AppColors.primaryColor,
+                          size: 26,
+                        ),
+                        onPressed: () {
+                          // Increase quantity functionality here
+                        },
                       ),
-                      onPressed: () {
-                        // Increase quantity functionality here
-                      },
-                    ),
-                  ],
-                ),
-                ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                    ],
+                  ),
+                  ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      "Add To Cart",
-                      style: TextStyle(fontSize: 12, color: Colors.white),
-                    )),
-                ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                      child: Text(
+                        "Add To Cart",
+                        style: TextStyle(fontSize: 12, color: Colors.white),
+                      )),
+                  ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      "Add Wishlist",
-                      style: TextStyle(fontSize: 12, color: Colors.white),
-                    )),
-              ],
+                      child: Text(
+                        "Add Wishlist",
+                        style: TextStyle(fontSize: 12, color: Colors.white),
+                      )),
+                ],
+              ),
             ),
             SizedBox(height: 16),
             // Categories
-            Text("Categories",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text("Categories",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            ),
             SizedBox(height: 8),
-            Wrap(
-              spacing: 8.0,
-              children: [
-                Chip(label: Text("Beer")),
-                Chip(label: Text("Spirits")),
-                Chip(label: Text("Chocolates")),
-                Chip(label: Text("Crisps")),
-              ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Wrap(
+                spacing: 8.0,
+                children: [
+                  Chip(label: Text("Beer")),
+                  Chip(label: Text("Spirits")),
+                  Chip(label: Text("Chocolates")),
+                  Chip(label: Text("Crisps")),
+                ],
+              ),
             ),
             SizedBox(height: 16),
             SectionHeader(
@@ -153,7 +172,6 @@ class ProductDetailScreen extends StatelessWidget {
               imageURL:
                   "https://cdn4.iconfinder.com/data/icons/flat-color-sale-tag-set/512/Accounts_label_promotion_sale_tag_3-512.png",
             ),
-            SizedBox(height: 16),
             FeaturedProduct(),
           ],
         ),

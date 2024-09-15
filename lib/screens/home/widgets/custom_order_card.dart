@@ -5,21 +5,21 @@ class OrderCard extends StatelessWidget {
   final String title;
   final String description;
   final String imageUrl;
-  final Color? color; // Add color parameter
+  final Color? color;
 
   const OrderCard({
     Key? key,
     required this.title,
     required this.description,
     required this.imageUrl,
-    this.color, // Include color in constructor
+    this.color,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: color, // Use the passed color
-      elevation: 4, // Optional elevation for a shadow effect
+      color: color,
+      elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
