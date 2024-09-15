@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yoo_local/screens/category/category_view.dart';
 import 'package:yoo_local/widgets/app_button.dart';
 
 class OrderCard extends StatelessWidget {
@@ -6,6 +7,7 @@ class OrderCard extends StatelessWidget {
   final String description;
   final String imageUrl;
   final Color? color;
+  final List<Map<String, dynamic>> products;
 
   const OrderCard({
     Key? key,
@@ -13,6 +15,7 @@ class OrderCard extends StatelessWidget {
     required this.description,
     required this.imageUrl,
     this.color,
+    required this.products,
   }) : super(key: key);
 
   @override
@@ -50,7 +53,16 @@ class OrderCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  AppButton(title: "View Deal", onTap: () {})
+                  AppButton(
+                      title: "View Deal",
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ResultScreen(products: products, name: title),
+                            ));
+                      })
                 ],
               ),
             ),

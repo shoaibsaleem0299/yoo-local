@@ -591,4 +591,137 @@ class SampleData {
       ],
     },
   ];
+
+  static List<Map<String, dynamic>> organicVegetables = [
+    {
+      'name': 'Organic Carrots',
+      'price': '£2.50',
+      'image':
+          'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h8d/hfb/11984326742046.png',
+      'isFavorite': true,
+      'description': 'Fresh and crunchy organic carrots, rich in vitamins...',
+    },
+    {
+      'name': 'Organic Spinach',
+      'price': '£1.80',
+      'image':
+          'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/hf3/h07/11984327802846.png',
+      'isFavorite': false,
+      'description':
+          'Healthy organic spinach, full of iron and other nutrients...',
+    },
+    {
+      'name': 'Organic Broccoli',
+      'price': '£2.00',
+      'image':
+          'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h43/h3e/11984326957022.png',
+      'isFavorite': true,
+      'description':
+          'Fresh organic broccoli, perfect for steaming or roasting...',
+    },
+    {
+      'name': 'Organic Kale',
+      'price': '£1.75',
+      'image':
+          'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h3f/hc2/11984326709310.png',
+      'isFavorite': false,
+      'description':
+          'Nutrient-dense organic kale, great for salads and smoothies...',
+    },
+    {
+      'name': 'Organic Tomatoes',
+      'price': '£3.00',
+      'image':
+          'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h5a/h72/11984326840862.png',
+      'isFavorite': true,
+      'description': 'Juicy organic tomatoes, perfect for sauces or salads...',
+    },
+  ];
+  static List<Map<String, dynamic>> freschFruits = [
+    {
+      'name': 'Apples',
+      'price': '£2.00',
+      'image':
+          'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h3a/h77/11984326435454.png',
+      'isFavorite': true,
+      'description': 'Crisp and sweet fresh apples, perfect for snacking...',
+    },
+    {
+      'name': 'Bananas',
+      'price': '£1.20',
+      'image':
+          'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h71/h9a/11984327649374.png',
+      'isFavorite': false,
+      'description':
+          'Ripe bananas, rich in potassium and perfect for smoothies...',
+    },
+    {
+      'name': 'Strawberries',
+      'price': '£2.50',
+      'image':
+          'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h55/hc5/11984326304030.png',
+      'isFavorite': true,
+      'description': 'Fresh and juicy strawberries, perfect for desserts...',
+    },
+    {
+      'name': 'Grapes',
+      'price': '£2.80',
+      'image':
+          'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h02/h2a/11984326059358.png',
+      'isFavorite': false,
+      'description': 'Sweet and seedless grapes, great for snacking...',
+    },
+    {
+      'name': 'Blueberries',
+      'price': '£3.00',
+      'image':
+          'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h6e/h55/11984325831710.png',
+      'isFavorite': true,
+      'description':
+          'Rich in antioxidants, fresh blueberries for healthy snacking...',
+    },
+  ];
+  static List<Map<String, dynamic>> dairyProducts = [
+    {
+      'name': 'Milk (1L)',
+      'price': '£1.00',
+      'image':
+          'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h8e/h4c/11984325941182.png',
+      'isFavorite': true,
+      'description': 'Fresh whole milk, great source of calcium...',
+    },
+    {
+      'name': 'Cheddar Cheese',
+      'price': '£2.50',
+      'image':
+          'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h03/h08/11984325897054.png',
+      'isFavorite': false,
+      'description':
+          'Sharp and creamy cheddar cheese, perfect for sandwiches...',
+    },
+    {
+      'name': 'Yogurt (Greek)',
+      'price': '£1.20',
+      'image':
+          'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h57/h9e/11984325768670.png',
+      'isFavorite': true,
+      'description': 'Thick and creamy Greek yogurt, rich in probiotics...',
+    },
+    {
+      'name': 'Butter (Unsalted)',
+      'price': '£1.50',
+      'image':
+          'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h39/hb7/11984325561054.png',
+      'isFavorite': false,
+      'description': 'Unsalted butter, perfect for baking and cooking...',
+    },
+    {
+      'name': 'Cream (Double)',
+      'price': '£1.80',
+      'image':
+          'https://www.totalwine.com/dynamic/490x/media/sys_master/twmmedia/h13/h4b/11984325592254.png',
+      'isFavorite': true,
+      'description': 'Rich double cream, ideal for desserts and sauces...',
+    },
+  ];
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
 import 'package:yoo_local/screens/home/widgets/featured_product.dart';
 import 'package:yoo_local/screens/home/widgets/section_header.dart';
+import 'package:yoo_local/widgets/counter.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final String name;
@@ -88,51 +89,36 @@ class ProductDetailScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.remove_circle,
-                          color: AppColors.primaryColor,
-                          size: 26,
+                  ItemCounter(initialQuantity: quatity),
+                  ElevatedButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Item Added successfully!'),
+                          duration: Duration(seconds: 2),
                         ),
-                        onPressed: () {
-                          // Decrease quantity functionality here
-                        },
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      Text(
-                        quatity.toString(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.add_circle,
-                          color: AppColors.primaryColor,
-                          size: 26,
-                        ),
-                        onPressed: () {
-                          // Increase quantity functionality here
-                        },
-                      ),
-                    ],
+                    ),
+                    child: Text(
+                      "Add To Cart",
+                      style: TextStyle(fontSize: 12, color: Colors.white),
+                    ),
                   ),
                   ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      child: Text(
-                        "Add To Cart",
-                        style: TextStyle(fontSize: 12, color: Colors.white),
-                      )),
-                  ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Item Added successfully!'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primaryColor,
                         shape: RoundedRectangleBorder(

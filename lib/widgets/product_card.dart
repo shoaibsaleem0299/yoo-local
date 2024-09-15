@@ -103,7 +103,12 @@ class ProductCard extends StatelessWidget {
                         size: 30,
                       ),
                       onPressed: () {
-                        // Add to cart functionality
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Item Added successfully!'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
                       },
                     ),
                   ],

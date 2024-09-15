@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
 import 'package:yoo_local/screens/checkout/checkout_view.dart';
 import 'package:yoo_local/widgets/app_button.dart';
+import 'package:yoo_local/widgets/counter.dart';
 
 class CartScreen extends StatelessWidget {
   final List<Map<String, dynamic>> cartData = [
@@ -168,45 +169,30 @@ class CartScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               IconButton(
-                                icon: Icon(Icons.delete_sweep_outlined,
-                                    size: 28, color: AppColors.primaryColor),
+                                icon: Icon(
+                                  Icons.delete_sweep_outlined,
+                                  size: 28,
+                                  color: AppColors.primaryColor,
+                                ),
                                 onPressed: () {
-                                  // Remove from cart functionality here
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content:
+                                          Text('Item deleted successfully!'),
+                                      duration: Duration(seconds: 2),
+                                      action: SnackBarAction(
+                                        label: 'Undo',
+                                        onPressed: () {
+                                          // Undo delete action if necessary
+                                        },
+                                      ),
+                                    ),
+                                  );
                                 },
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 18),
-                                child: Row(
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.remove_circle,
-                                        color: AppColors.primaryColor,
-                                        size: 26,
-                                      ),
-                                      onPressed: () {
-                                        // Decrease quantity functionality here
-                                      },
-                                    ),
-                                    Text(
-                                      '${product['quantity']}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.add_circle,
-                                        color: AppColors.primaryColor,
-                                        size: 26,
-                                      ),
-                                      onPressed: () {
-                                        // Increase quantity functionality here
-                                      },
-                                    ),
-                                  ],
-                                ),
+                                child: ItemCounter(initialQuantity: 1),
                               ),
                             ],
                           ),
