@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
 import 'package:yoo_local/screens/checkout/checkout_view.dart';
+import 'package:yoo_local/screens/login/login_view.dart';
 import 'package:yoo_local/widgets/app_button.dart';
 import 'package:yoo_local/widgets/counter.dart';
 
@@ -241,8 +242,10 @@ class CartScreen extends StatelessWidget {
             AppButton(
               title: 'Check Out For £$totalPrice',
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CheckoutView()));
+                Navigator.push(
+                    context,
+                    // MaterialPageRoute(builder: (context) => CheckoutView()));
+                    MaterialPageRoute(builder: (context) => LoginView()));
               },
             ),
             const SizedBox(height: 16),
