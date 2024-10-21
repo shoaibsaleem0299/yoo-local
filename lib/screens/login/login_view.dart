@@ -33,9 +33,6 @@ class LoginView extends StatelessWidget {
             LocalData.addString(AppConstants.username, name);
             String email = response.data['data']['email'];
             LocalData.addString(AppConstants.userEmail, email);
-            print(name);
-            print(token);
-            print(email);
             Navigator.pop(context);
           }
         } catch (e) {
