@@ -7,6 +7,8 @@ class ProductCard extends StatelessWidget {
   final String image;
   final bool isFavorite;
   final VoidCallback onTap;
+  final VoidCallback onAddToCart;
+  final VoidCallback onAddToFavorite;
 
   const ProductCard({
     super.key,
@@ -15,6 +17,8 @@ class ProductCard extends StatelessWidget {
     required this.image,
     required this.isFavorite,
     required this.onTap,
+    required this.onAddToCart,
+    required this.onAddToFavorite,
   });
 
   @override
@@ -24,7 +28,7 @@ class ProductCard extends StatelessWidget {
       child: SizedBox(
         width: 160,
         child: InkWell(
-          onTap: onTap, // Update this line
+          onTap: onTap,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -57,10 +61,12 @@ class ProductCard extends StatelessWidget {
                     Positioned(
                       top: 8.0,
                       right: 8.0,
-                      child: Icon(
-                        Icons.favorite,
-                        color: isFavorite ? Colors.red : Colors.grey,
-                        size: 26,
+                      child: IconButton(
+                        onPressed: onAddToFavorite,
+                        icon: Icon(
+                          Icons.favorite,
+                          color: isFavorite ? Colors.red : Colors.grey,
+                        ),
                       ),
                     ),
                   ],
@@ -102,14 +108,7 @@ class ProductCard extends StatelessWidget {
                         color: AppColors.primaryColor,
                         size: 30,
                       ),
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Item Added successfully!'),
-                            duration: Duration(seconds: 2),
-                          ),
-                        );
-                      },
+                      onPressed: onAddToCart,
                     ),
                   ],
                 ),

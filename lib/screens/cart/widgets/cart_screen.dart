@@ -1,10 +1,80 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
+import 'package:yoo_local/app_constant/app_constants.dart';
 import 'package:yoo_local/screens/checkout/checkout_view.dart';
+import 'package:yoo_local/screens/login/login_view.dart';
+import 'package:yoo_local/ui_fuctionality/local_data.dart';
 import 'package:yoo_local/widgets/app_button.dart';
 import 'package:yoo_local/widgets/counter.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  final Dio _dio = Dio();
+
+  Future<List<Map<String, dynamic>>> getUserCart() async {
+    var userToken = await LocalData.getString(AppConstants.userToken);
+    if (userToken != null) {
+      try {
+        String url = "${AppConstants.baseUrl}/cart/cart_by_user";
+        Response response = await _dio.post(
+          url,
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $userToken',
+            },
+          ),
+        );
+        if (response.statusCode == 200) {}
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Login failed, Credentials not matched',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            backgroundColor: AppColors.primaryColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    } else {
+      Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text("Please Login"),
+            AppButton(
+                title: "Login",
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginView()));
+                })
+          ],
+        ),
+      );
+    }
+
+    return [];
+  }
+
   final List<Map<String, dynamic>> cartData = [
     {
       'name': 'Corona Extra Beer',
@@ -65,8 +135,11 @@ class CartScreen extends StatelessWidget {
   ];
 
   final double subtotal = 6.89;
+
   final double deliveryFee = 4.9;
-  final double discount = 10; // in percentage
+
+  final double discount = 10;
+
   final double totalPrice = 10.0;
 
   @override
@@ -75,19 +148,6 @@ class CartScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: const Icon(
-              Icons.search,
-              color: Colors.black,
-              size: 32,
-            ),
-          ),
-          onPressed: () {
-            // Add your search functionality here
-          },
-        ),
         title: const Text('Cart'),
         centerTitle: true,
       ),

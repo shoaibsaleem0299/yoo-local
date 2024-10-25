@@ -22,7 +22,7 @@ class LoginView extends StatelessWidget {
           Response response = await _dio.post(
             url,
             data: {
-              'email': emailController.text,
+              'login': emailController.text,
               'password': passwordController.text,
             },
           );
@@ -82,7 +82,7 @@ class LoginView extends StatelessWidget {
                     TextFormField(
                       controller: emailController,
                       decoration: InputDecoration(
-                        labelText: 'Email Address',
+                        labelText: 'Email/Username',
                         border: UnderlineInputBorder(),
                       ),
                       style: TextStyle(color: AppColors.secondaryColor),

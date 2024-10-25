@@ -162,6 +162,8 @@ class ResultScreen extends StatelessWidget {
                 ),
               );
             },
+            onAddToCart: () {},
+            onAddToFavorite: () {},
           );
         },
       ),
