@@ -2,18 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
 import 'package:yoo_local/screens/category/category_view.dart';
 
-class CategoryCard extends StatelessWidget {
+class CategoryCard extends StatefulWidget {
   final String title;
   final String imageUrl;
-  final List<Map<String, dynamic>> products;
+  final String productId;
 
   const CategoryCard({
     Key? key,
     required this.title,
     required this.imageUrl,
-    required this.products,
+    required this.productId,
   }) : super(key: key);
 
+  @override
+  State<CategoryCard> createState() => _CategoryCardState();
+}
+
+class _CategoryCardState extends State<CategoryCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -21,7 +26,8 @@ class CategoryCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ResultScreen(products: products, name: title),
+            builder: (context) =>
+                ResultScreen(productId: widget.productId, name: widget.title),
           ),
         );
       },
@@ -40,7 +46,7 @@ class CategoryCard extends StatelessWidget {
             ),
             child: Center(
               child: Image.network(
-                imageUrl,
+                widget.imageUrl,
                 width: 40,
                 height: 40,
                 fit: BoxFit.contain,
@@ -56,7 +62,7 @@ class CategoryCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            title,
+            widget.title,
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,

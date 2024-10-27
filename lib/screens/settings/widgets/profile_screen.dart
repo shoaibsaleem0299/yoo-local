@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
+import 'package:yoo_local/app_constant/app_constants.dart';
+import 'package:yoo_local/screens/app_navigation/google_nav.dart';
+import 'package:yoo_local/screens/login/login_view.dart';
+import 'package:yoo_local/ui_fuctionality/local_data.dart';
 import 'package:yoo_local/widgets/app_button.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -8,11 +12,23 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  var userToken = null;
+  var username = null;
+  var userEmail = null;
+  Future<void> getUserData() async {
+    var Token = await LocalData.getString(AppConstants.userToken);
+    var name = await LocalData.getString(AppConstants.username);
+    var Email = await LocalData.getString(AppConstants.userEmail);
+    setState(() {
+      userToken = Token;
+      username = name;
+      userEmail = Email;
+    });
+  }
+
   final Map<String, String> profileData = {
-    'name': 'Parker',
     'phone': '0127892245',
     'address': 'Abc, Xyz',
-    'email': 'abc@gmail.com',
     'imageUrl':
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwYyWPcL_7bPaAvZqBO0OAwQYxjOsNo-kr8A&s'
   };
@@ -22,114 +38,80 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool isCardSelected = false;
 
   @override
+  void initState() {
+    super.initState();
+    getUserData();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
+    if (userToken != null) {
+      return Scaffold(
         backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: const Icon(
-              Icons.search,
-              color: Colors.black,
-              size: 32,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: const Text('Profile'),
+          centerTitle: true,
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Divider(color: AppColors.primaryColor),
+                SizedBox(height: 16.0),
+                CircleAvatar(
+                  radius: 60,
+                  backgroundImage: NetworkImage(profileData['imageUrl']!),
+                ),
+                SizedBox(height: 16.0),
+                Text(
+                  username,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 16.0),
+                _buildProfileRow(Icons.phone, profileData['phone']!),
+                SizedBox(height: 16.0),
+                _buildProfileRow(Icons.location_on, profileData['address']!),
+                SizedBox(height: 16.0),
+                _buildProfileRow(Icons.email, userEmail),
+                SizedBox(height: 32.0),
+                SizedBox(height: 32.0),
+                AppButton(
+                    title: "Home",
+                    onTap: () {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => GoogleNavBar()));
+                    }),
+                SizedBox(height: 16.0),
+              ],
             ),
           ),
-          onPressed: () {
-            // Add your search functionality here
-          },
         ),
-        title: const Text('Profile'),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Divider(color: AppColors.primaryColor),
-              SizedBox(height: 16.0),
-              CircleAvatar(
-                radius: 60,
-                backgroundImage: NetworkImage(profileData['imageUrl']!),
-              ),
-              SizedBox(height: 16.0),
-              Text(
-                profileData['name']!,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 16.0),
-              _buildProfileRow(Icons.phone, profileData['phone']!),
-              SizedBox(height: 16.0),
-              _buildProfileRow(Icons.location_on, profileData['address']!),
-              SizedBox(height: 16.0),
-              _buildProfileRow(Icons.email, profileData['email']!),
-              SizedBox(height: 32.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Checkbox(
-                    activeColor: AppColors.primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    value: isCashSelected,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        isCashSelected = value!;
-                      });
-                    },
-                  ),
-                  Column(
-                    children: [
-                      Icon(Icons.money, color: Colors.black),
-                      SizedBox(height: 8.0),
-                      Text('Cash'),
-                    ],
-                  ),
-                  SizedBox(width: 32.0),
-                  Checkbox(
-                    activeColor: AppColors.primaryColor,
-                    value: isCardSelected,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    onChanged: (bool? value) {
-                      setState(() {
-                        isCardSelected = value!;
-                      });
-                    },
-                  ),
-                  Column(
-                    children: [
-                      Icon(Icons.credit_card, color: Colors.black),
-                      SizedBox(height: 8.0),
-                      Text('Card'),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: 32.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AppButton(title: "Home", onTap: () {}),
-                  SizedBox(width: 16.0),
-                  AppButton(title: "Sign Out", onTap: () {}),
-                ],
-              ),
-              SizedBox(height: 16.0),
-            ],
-          ),
+      );
+    } else {
+      return Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Please Login"),
+            AppButton(
+                title: "Login",
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginView()));
+                })
+          ],
         ),
-      ),
-    );
+      );
+    }
   }
 
   Widget _buildProfileRow(IconData icon, String data) {

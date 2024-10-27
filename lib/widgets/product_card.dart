@@ -73,44 +73,49 @@ class ProductCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            name,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.black,
+              // Wrap the Row in an Expanded widget
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              name,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.black,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            price,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
+                            const SizedBox(height: 4),
+                            Text(
+                              price,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.add_circle,
-                        color: AppColors.primaryColor,
-                        size: 30,
+                      IconButton(
+                        icon: Icon(
+                          Icons.add_circle,
+                          color: AppColors.primaryColor,
+                          size: 30,
+                        ),
+                        onPressed: () {
+                          onAddToCart();
+                        },
                       ),
-                      onPressed: onAddToCart,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],

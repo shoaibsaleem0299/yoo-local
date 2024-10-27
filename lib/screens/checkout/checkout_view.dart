@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:yoo_local/widgets/app_button.dart';
 
 class CheckoutView extends StatelessWidget {
-  const CheckoutView({super.key});
+  final String total;
+  final String discount;
+  final String delivery;
+  const CheckoutView(
+      {super.key,
+      required this.total,
+      required this.discount,
+      required this.delivery});
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +17,7 @@ class CheckoutView extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('Cart'),
+        title: const Text('Check Out'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -98,16 +105,16 @@ class CheckoutView extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         const SizedBox(height: 10),
-        _buildSummaryRow('Subtotal:', '\$6.89'),
+        _buildSummaryRow('Subtotal:', '\£${total}'),
         const SizedBox(height: 5),
-        _buildSummaryRow('Delivery Fee:', '\$4.9'),
+        _buildSummaryRow('Delivery Fee:', '\£${delivery}'),
         const SizedBox(height: 5),
-        _buildSummaryRow('Discount:', '%10'),
+        _buildSummaryRow('Discount:', '%${discount}'),
         const SizedBox(height: 5),
         const Divider(),
         _buildSummaryRow(
           'Total:',
-          '\$10.00',
+          '\£${total}',
           isTotal: true,
         ),
       ],

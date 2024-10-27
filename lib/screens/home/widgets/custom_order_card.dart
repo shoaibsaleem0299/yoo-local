@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yoo_local/screens/category/category_view.dart';
-import 'package:yoo_local/widgets/app_button.dart';
+
 
 class OrderCard extends StatelessWidget {
   final String title;
@@ -53,16 +52,16 @@ class OrderCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  AppButton(
-                      title: "View Deal",
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ResultScreen(products: products, name: title),
-                            ));
-                      })
+                  // AppButton(
+                  //     title: "View Deal",
+                  //     onTap: () {
+                  //       // Navigator.push(
+                  //       //     context,
+                  //       //     MaterialPageRoute(
+                  //       //       builder: (context) =>
+                  //       //           ResultScreen(productId: products, name: title),
+                  //       //     ));
+                  //     })
                 ],
               ),
             ),

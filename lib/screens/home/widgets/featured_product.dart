@@ -7,132 +7,103 @@ import 'package:yoo_local/ui_fuctionality/local_data.dart';
 import 'package:yoo_local/widgets/product_card.dart';
 import 'package:yoo_local/widgets/product_view.dart';
 
-class FeaturedProduct extends StatelessWidget {
+class FeaturedProduct extends StatefulWidget {
   const FeaturedProduct({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> products = [
-      {
-        'name': 'Corona Extra Beer',
-        'price': '£1.59',
-        'image':
-            'https://www.gomarket.com.ng/wp-content/uploads/2023/05/2021-08-26-61279756194c8.png',
-        'isFavorite': true,
-        'description':
-            'Corona Extra is a light, crisp Mexican Lager with a pale straw color...',
-      },
-      {
-        'name': 'Budweiser Beer',
-        'price': '£2.00',
-        'image':
-            'https://www.gomarket.com.ng/wp-content/uploads/2023/05/2021-08-26-61279756194c8.png',
-        'isFavorite': false,
-        'description':
-            'Budweiser is a medium-bodied American Lager with a slightly bitter taste...',
-      },
-      {
-        'name': 'Budweiser Beer',
-        'price': '£2.00',
-        'image':
-            'https://www.gomarket.com.ng/wp-content/uploads/2023/05/2021-08-26-61279756194c8.png',
-        'isFavorite': false,
-        'description':
-            'Budweiser is a medium-bodied American Lager with a slightly bitter taste...',
-      },
-      {
-        'name': 'Budweiser Beer',
-        'price': '£2.00',
-        'image':
-            'https://www.gomarket.com.ng/wp-content/uploads/2023/05/2021-08-26-61279756194c8.png',
-        'isFavorite': false,
-        'description':
-            'Budweiser is a medium-bodied American Lager with a slightly bitter taste...',
-      },
-    ];
-    final Dio _dio = Dio();
+  State<FeaturedProduct> createState() => _FeaturedProductState();
+}
 
-    Future<void> addToCart(String productId) async {
-      var userToken = await LocalData.getString(AppConstants.userToken);
-      if (userToken != null) {
-        try {
-          String url = "${AppConstants.baseUrl}/cart/addToCart";
-          Response response = await _dio.post(
-            url,
-            data: {
-              'product_id': productId,
-              'quantity': 1,
-            },
-          );
-          if (response.statusCode == 200) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Center(
-                  child: Text(
-                    'Item added to cart',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                backgroundColor: AppColors.primaryColor,
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                duration: Duration(seconds: 3),
-              ),
-            );
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Center(
-                  child: Text(
-                    'Try Again: Network Error',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                backgroundColor: AppColors.primaryColor,
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                duration: Duration(seconds: 3),
-              ),
-            );
-          }
-        } catch (e) {
+class _FeaturedProductState extends State<FeaturedProduct> {
+  @override
+  void initState() {
+    super.initState();
+    getProducts();
+  }
+
+  final Dio _dio = Dio();
+  List<Map<String, dynamic>> products = [];
+  Future<void> getProducts() async {
+    try {
+      String url = "${AppConstants.baseUrl}/inventory";
+      Response response = await _dio.get(url);
+
+      // Print the entire response for debugging
+      print("API Response: ${response.data}");
+
+      if (response.statusCode == 200) {
+        // Check if the response has the expected structure
+        if (response.data['data'] != null &&
+            response.data['data']['values'] != null) {
+          setState(() {
+            products = List<Map<String, dynamic>>.from(
+                response.data['data']['values']);
+            print(
+                "Parsed Products: $products"); // Print parsed products for further debugging
+          });
+        } else {
+          print("Error: 'data' or 'values' is null in the response");
+        }
+      } else {
+        print(
+            "Failed to load products: ${response.statusCode} ${response.statusMessage}");
+      }
+    } catch (e) {
+      print("Error fetching products: $e");
+    }
+  }
+
+  Future<void> addToCart(String productId) async {
+    var userToken = await LocalData.getString(AppConstants.userToken);
+    if (userToken != null) {
+      try {
+        String url = "${AppConstants.baseUrl}/cart/addToCart/$productId";
+        Response response = await _dio.post(
+          url,
+          options: Options(headers: {
+            'Authorization': 'Bearer $userToken'
+          }), // Add token to headers
+        );
+
+        if (response.statusCode == 200) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                'Try Again: Network Error',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
+              content: Text('Item added to cart successfully'),
               backgroundColor: AppColors.primaryColor,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              duration: Duration(seconds: 3),
+            ),
+          );
+        } else {
+          print(
+              "Failed to add item to cart: ${response.statusCode} ${response.statusMessage}");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to add to cart, please try again'),
+              backgroundColor: Colors.red,
             ),
           );
         }
-      } else {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginView()));
+      } catch (e) {
+        print("Error adding to cart: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Network error, please try again'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
+    } else {
+      // Navigate to login if user is not authenticated
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginView()));
     }
+  }
 
+  Future<void> addToCheck(String productId) async {
+    print("Attempting to add product $productId to cart");
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: SizedBox(
@@ -145,10 +116,10 @@ class FeaturedProduct extends StatelessWidget {
             return Container(
               margin: const EdgeInsets.only(right: 8.0),
               child: ProductCard(
-                name: product['name'],
-                price: product['price'],
-                image: product['image'],
-                isFavorite: product['isFavorite'],
+                name: product['title'],
+                price: product['purchase_price'],
+                image: product['feature_image']['path'],
+                isFavorite: false,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -159,12 +130,16 @@ class FeaturedProduct extends StatelessWidget {
                         image: product['image'],
                         description: product['description'],
                         quatity: 1,
+                        productId: product['product_id'],
+                        inventory_id: product['inventory_id'],
                       ),
                     ),
                   );
                 },
                 onAddToCart: () {
-                  addToCart(product['id']);
+                  print(
+                      "Inventory ID in callback: ${product['inventory_id']}"); // Check this line
+                  addToCart(product['inventory_id']);
                 },
                 onAddToFavorite: () {},
               ),
