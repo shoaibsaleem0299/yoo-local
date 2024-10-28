@@ -53,7 +53,7 @@ class HomeScreen extends StatelessWidget {
                 heading: "Featured Products",
                 imageURL:
                     "https://cdn-icons-png.freepik.com/256/8510/8510223.png?semt=ais_hybrid",
-                trailing: "View All",
+            
               ),
               FeaturedProduct(),
               SizedBox(height: 12),
@@ -61,7 +61,7 @@ class HomeScreen extends StatelessWidget {
                 heading: "Top Selling Products",
                 imageURL:
                     "https://cdn-icons-png.flaticon.com/512/771/771222.png",
-                trailing: "View All",
+           
               ),
               FeaturedProduct(),
               SizedBox(height: 12),
@@ -69,7 +69,7 @@ class HomeScreen extends StatelessWidget {
                 heading: "Best Selling Products",
                 imageURL:
                     "https://cdn-icons-png.freepik.com/512/8465/8465733.png",
-                trailing: "View All",
+          
               ),
               FeaturedProduct(),
               SizedBox(height: 6),

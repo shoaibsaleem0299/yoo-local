@@ -63,9 +63,10 @@ class ProductDetailScreen extends StatelessWidget {
     if (token != null) {
       try {
         final Dio _dio = Dio();
-        String url = "${AppConstants.baseUrl}/cart/addToCart/$inventory_id";
+        String url = "${AppConstants.baseUrl}/cart/addToCart/$productId";
         Response response = await _dio.post(
           url,
+          data: {'quantity': 1},
           options: Options(headers: {'Authorization': 'Bearer $token'}),
         );
 
@@ -190,7 +191,7 @@ class ProductDetailScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Image.network(
-                    image,
+                    "${AppConstants.imageUrl}/${image}",
                     height: 120,
                     width: 120,
                     fit: BoxFit.cover,

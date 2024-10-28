@@ -67,7 +67,7 @@ class _CartScreenState extends State<CartScreen> {
 
     if (userToken != null) {
       try {
-        String url = "https://yoolocal.co.uk/api/removeItem";
+        String url = "https://yoolocal.co.uk/api/cart/removeItem";
 
         // Prepare the request body
         final requestBody = {
@@ -135,8 +135,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return Center(
-          child: CircularProgressIndicator()); 
+      return Center(child: CircularProgressIndicator());
     }
 
     if (!isLoggedIn) {
@@ -224,7 +223,7 @@ class _CartScreenState extends State<CartScreen> {
                               ),
                               child: Center(
                                 child: Image.network(
-                                  product['imageUrl'] ?? 'unknown',
+                                  "${AppConstants.imageUrl}${product['featured_image']['path']}",
                                   width: 60,
                                   height: 80,
                                   fit: BoxFit.contain,

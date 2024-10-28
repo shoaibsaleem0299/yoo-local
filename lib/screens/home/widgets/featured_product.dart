@@ -28,18 +28,13 @@ class _FeaturedProductState extends State<FeaturedProduct> {
       String url = "${AppConstants.baseUrl}/inventory";
       Response response = await _dio.get(url);
 
-      // Print the entire response for debugging
-      print("API Response: ${response.data}");
-
       if (response.statusCode == 200) {
-        // Check if the response has the expected structure
         if (response.data['data'] != null &&
             response.data['data']['values'] != null) {
           setState(() {
             products = List<Map<String, dynamic>>.from(
                 response.data['data']['values']);
-            print(
-                "Parsed Products: $products"); // Print parsed products for further debugging
+            
           });
         } else {
           print("Error: 'data' or 'values' is null in the response");
@@ -60,6 +55,9 @@ class _FeaturedProductState extends State<FeaturedProduct> {
         String url = "${AppConstants.baseUrl}/cart/addToCart/$productId";
         Response response = await _dio.post(
           url,
+          data: {
+            'quantity': 1,
+          },
           options: Options(headers: {
             'Authorization': 'Bearer $userToken'
           }), // Add token to headers
@@ -98,9 +96,6 @@ class _FeaturedProductState extends State<FeaturedProduct> {
     }
   }
 
-  Future<void> addToCheck(String productId) async {
-    print("Attempting to add product $productId to cart");
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,29 +112,27 @@ class _FeaturedProductState extends State<FeaturedProduct> {
               margin: const EdgeInsets.only(right: 8.0),
               child: ProductCard(
                 name: product['title'],
-                price: product['purchase_price'],
-                image: product['feature_image']['path'],
+                price: product['sale_price'],
+                image: product['image_url'],
                 isFavorite: false,
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => ProductDetailScreen(
-                        name: product['name'],
-                        price: product['price'],
-                        image: product['image'],
-                        description: product['description'],
+                        name: product['title'] ?? "item",
+                        price: product['purchase_price'] ?? "0.0",
+                        image: product['image_url'] ?? "unkown",
+                        description: product['description'] ?? "No Description",
                         quatity: 1,
-                        productId: product['product_id'],
-                        inventory_id: product['inventory_id'],
+                        productId: product['id'],
+                        inventory_id: product['inventory_id'] ?? 1,
                       ),
                     ),
                   );
                 },
                 onAddToCart: () {
-                  print(
-                      "Inventory ID in callback: ${product['inventory_id']}"); // Check this line
-                  addToCart(product['inventory_id']);
+                  addToCart(product['id'].toString());
                 },
                 onAddToFavorite: () {},
               ),

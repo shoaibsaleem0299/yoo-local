@@ -33,7 +33,6 @@ class _CategoriesSectionState extends State<CategoriesSection> {
           allCategories =
               List<Map<String, dynamic>>.from(response.data['data']['values']);
         });
-      
       } else {
         print(
             "Failed to load categories: Unexpected response format or status code");
@@ -54,9 +53,9 @@ class _CategoriesSectionState extends State<CategoriesSection> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: allCategories.take(3).map((category) {
               return custom_category_card.CategoryCard(
-                title: category['name'],
-                imageUrl: category['feature_image'] ??
-                    'assets/images/default_image.png',
+                title: category['name'] ?? "item",
+                imageUrl:
+                    category['image_url'] ?? 'assets/images/default_image.png',
                 productId: category['id'].toString(),
               );
             }).toList(),
