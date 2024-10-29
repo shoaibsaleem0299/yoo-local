@@ -34,7 +34,6 @@ class _FeaturedProductState extends State<FeaturedProduct> {
           setState(() {
             products = List<Map<String, dynamic>>.from(
                 response.data['data']['values']);
-            
           });
         } else {
           print("Error: 'data' or 'values' is null in the response");
@@ -96,7 +95,6 @@ class _FeaturedProductState extends State<FeaturedProduct> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -111,22 +109,21 @@ class _FeaturedProductState extends State<FeaturedProduct> {
             return Container(
               margin: const EdgeInsets.only(right: 8.0),
               child: ProductCard(
-                name: product['title'],
-                price: product['sale_price'],
-                image: product['image_url'],
-                isFavorite: false,
+                name: product['title'] ?? "item",
+                price: product['sale_price'] ?? "0.0",
+                image: product['image_url'] ?? "unknown",
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => ProductDetailScreen(
                         name: product['title'] ?? "item",
-                        price: product['purchase_price'] ?? "0.0",
+                        price: product['sale_price'] ?? "0.0",
                         image: product['image_url'] ?? "unkown",
                         description: product['description'] ?? "No Description",
                         quatity: 1,
-                        productId: product['id'],
-                        inventory_id: product['inventory_id'] ?? 1,
+                        productId: product['product_id'].to,
+                        inventory_id: product['id'] ?? 1,
                       ),
                     ),
                   );

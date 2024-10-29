@@ -389,11 +389,10 @@ class _ResultScreenState extends State<ResultScreen> {
                 final product = products[index];
                 return ProductCard(
                   name: product['title'] ?? 'Unknown', // Default value
-                  price: product['purchase_price']?.toString() ??
-                      '0', // Handle null
+                  price:
+                      product['sale_price']?.toString() ?? '0', // Handle null
                   image: product['image_url'] ??
                       'assets/images/default_image.png', // Default image
-                  isFavorite: product['isFavorite'] ?? false, // Default value
                   onTap: () {
                     Navigator.push(
                       context,

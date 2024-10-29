@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
 import 'package:yoo_local/screens/category/category_view.dart';
 
-class CategoryCard extends StatefulWidget {
+class CategoryCard extends StatelessWidget {
   final String title;
   final String imageUrl;
   final String productId;
@@ -15,11 +15,6 @@ class CategoryCard extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CategoryCard> createState() => _CategoryCardState();
-}
-
-class _CategoryCardState extends State<CategoryCard> {
-  @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
@@ -27,7 +22,7 @@ class _CategoryCardState extends State<CategoryCard> {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                ResultScreen(productId: widget.productId, name: widget.title),
+                ResultScreen(productId: productId, name: title),
           ),
         );
       },
@@ -46,7 +41,7 @@ class _CategoryCardState extends State<CategoryCard> {
             ),
             child: Center(
               child: Image.network(
-                widget.imageUrl,
+                imageUrl,
                 width: 40,
                 height: 40,
                 fit: BoxFit.contain,
@@ -62,7 +57,7 @@ class _CategoryCardState extends State<CategoryCard> {
           ),
           const SizedBox(height: 8),
           Text(
-            widget.title,
+            title.length > 10 ? '${title.substring(0, 7)}...' : title,
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,

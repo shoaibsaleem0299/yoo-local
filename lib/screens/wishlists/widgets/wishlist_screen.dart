@@ -63,6 +63,109 @@ class _WishlistScreenState extends State<WishlistScreen> {
     });
   }
 
+  Future<void> addToCart(BuildContext context, String productId) async {
+    var token = await LocalData.getString(AppConstants.userToken);
+    try {
+      final Dio _dio = Dio();
+      String url = "${AppConstants.baseUrl}/cart/addToCart/$productId";
+      Response response = await _dio.post(
+        url,
+        data: {'quantity': 1},
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              'Item added to cart successfully',
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+            backgroundColor: AppColors.primaryColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              'Network Error. Please Try Again',
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+            backgroundColor: AppColors.primaryColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (error) {
+      print('Failed to add to cart ${error}');
+    }
+  }
+
+  Future<void> removeWishlist(String productId, String inventoryId) async {
+    var token = LocalData.getString(AppConstants.userToken);
+    try {
+      final Dio _dio = Dio();
+      String url = "${AppConstants.baseUrl}/wishlist";
+      Response response = await _dio.delete(url,
+          options: Options(headers: {'Authorization': 'Bearer $token'}),
+          data: {
+            'product_id': productId,
+            'inventory_id': inventoryId,
+          });
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              'Item delete from wishlist successfully',
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+            backgroundColor: AppColors.primaryColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              'Network Error. Please Try Again',
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+            backgroundColor: AppColors.primaryColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (error) {
+      print('Failed to remove from wishlist ${error}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,8 +217,13 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                       const EdgeInsets.symmetric(vertical: 12),
                                   child: Row(
                                     children: [
-                                      Icon(Icons.remove_circle,
-                                          color: AppColors.primaryColor),
+                                      IconButton(
+                                          onPressed: () {
+                                            removeWishlist(
+                                                inventory['product_id'],
+                                                inventory['inventory_id']);
+                                          },
+                                          icon: Icon(Icons.remove_circle)),
                                       const SizedBox(width: 4),
                                       Image.network(
                                         inventory['image_url'] ?? 'unknown',
@@ -164,7 +272,10 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                           ElevatedButton(
                                             onPressed: inStock
                                                 ? () {
-                                                    // Add to cart functionality here
+                                                    addToCart(
+                                                        context,
+                                                        inventory[
+                                                            'inventory_id']);
                                                   }
                                                 : null,
                                             style: ElevatedButton.styleFrom(

@@ -5,7 +5,6 @@ class ProductCard extends StatelessWidget {
   final String name;
   final String price;
   final String image;
-  final bool isFavorite;
   final VoidCallback onTap;
   final VoidCallback onAddToCart;
   final VoidCallback onAddToFavorite;
@@ -15,7 +14,6 @@ class ProductCard extends StatelessWidget {
     required this.name,
     required this.price,
     required this.image,
-    required this.isFavorite,
     required this.onTap,
     required this.onAddToCart,
     required this.onAddToFavorite,
@@ -58,17 +56,17 @@ class ProductCard extends StatelessWidget {
                         },
                       ),
                     ),
-                    Positioned(
-                      top: 8.0,
-                      right: 8.0,
-                      child: IconButton(
-                        onPressed: onAddToFavorite,
-                        icon: Icon(
-                          Icons.favorite,
-                          color: isFavorite ? Colors.red : Colors.grey,
-                        ),
-                      ),
-                    ),
+                    // Positioned(
+                    //   top: 8.0,
+                    //   right: 8.0,
+                    //   child: IconButton(
+                    //     onPressed: onAddToFavorite,
+                    //     icon: Icon(
+                    //       Icons.favorite,
+                    //       color: isFavorite ? Colors.red : Colors.grey,
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
