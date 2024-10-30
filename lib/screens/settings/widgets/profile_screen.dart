@@ -101,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Please Login"),
+            const Text("Please login"),
             AppButton(
                 title: "Login",
                 onTap: () {

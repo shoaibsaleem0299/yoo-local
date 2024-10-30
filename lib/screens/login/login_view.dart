@@ -5,13 +5,26 @@ import 'package:yoo_local/app_constant/app_constants.dart';
 import 'package:yoo_local/screens/register/create_account_view.dart';
 import 'package:yoo_local/ui_fuctionality/local_data.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
+    bool isPasswordVisible = false;
+
+    void togglePasswordVisibility() {
+      setState(() {
+        isPasswordVisible = !isPasswordVisible;
+      });
+    }
+
     final formKey = GlobalKey<FormState>();
     final Dio _dio = Dio();
 
@@ -105,10 +118,17 @@ class LoginView extends StatelessWidget {
                       decoration: InputDecoration(
                         labelText: 'Password',
                         border: UnderlineInputBorder(),
-                        suffixIcon: Icon(Icons.visibility_off,
-                            color: AppColors.secondaryColor),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: AppColors.secondaryColor,
+                          ),
+                          onPressed: togglePasswordVisibility,
+                        ),
                       ),
-                      obscureText: true,
+                      obscureText: !isPasswordVisible,
                       style: TextStyle(color: AppColors.secondaryColor),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -120,17 +140,7 @@ class LoginView extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  'Forgot Password?',
-                  style: TextStyle(
-                      color: AppColors.primaryColor,
-                      fontWeight: FontWeight.w700),
-                ),
-              ),
-              SizedBox(height: 40),
+              SizedBox(height: 60),
               ElevatedButton(
                 onPressed: () {
                   login();

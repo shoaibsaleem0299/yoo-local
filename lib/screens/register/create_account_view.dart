@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
 import 'package:yoo_local/app_constant/app_constants.dart';
 
-class CreateAccountView extends StatelessWidget {
+class CreateAccountView extends StatefulWidget {
   const CreateAccountView({super.key});
 
+  @override
+  State<CreateAccountView> createState() => _CreateAccountViewState();
+}
+
+class _CreateAccountViewState extends State<CreateAccountView> {
   @override
   Widget build(BuildContext context) {
     final TextEditingController nameController = TextEditingController();
@@ -14,6 +19,14 @@ class CreateAccountView extends StatelessWidget {
     final TextEditingController passwordController = TextEditingController();
     final TextEditingController confirmPasswordController =
         TextEditingController();
+    bool isPasswordVisible = false;
+
+    void togglePasswordVisibility() {
+      setState(() {
+        isPasswordVisible = !isPasswordVisible;
+      });
+    }
+
     final formKey = GlobalKey<FormState>();
     final Dio _dio = Dio();
     String errorMessage = '';
@@ -154,15 +167,22 @@ class CreateAccountView extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     TextFormField(
+                      controller: passwordController,
                       decoration: InputDecoration(
                         labelText: 'Password',
                         border: UnderlineInputBorder(),
-                        suffixIcon: Icon(Icons.visibility_off,
-                            color: AppColors.secondaryColor),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: AppColors.secondaryColor,
+                          ),
+                          onPressed: togglePasswordVisibility,
+                        ),
                       ),
-                      obscureText: true,
+                      obscureText: !isPasswordVisible,
                       style: TextStyle(color: AppColors.secondaryColor),
-                      controller: passwordController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your Password';
@@ -172,22 +192,25 @@ class CreateAccountView extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Confirm Password',
-                        border: UnderlineInputBorder(),
-                        suffixIcon: Icon(Icons.visibility_off,
-                            color: AppColors.secondaryColor),
-                      ),
-                      obscureText: true,
-                      style: TextStyle(color: AppColors.secondaryColor),
                       controller: confirmPasswordController,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        border: UnderlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: AppColors.secondaryColor,
+                          ),
+                          onPressed: togglePasswordVisibility,
+                        ),
+                      ),
+                      obscureText: !isPasswordVisible,
+                      style: TextStyle(color: AppColors.secondaryColor),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your Confirm Password';
-                        }
-                        if (confirmPasswordController.text !=
-                            passwordController.text) {
-                          return 'Password and Confirm Password Not Matched';
+                          return 'Please enter your Password';
                         }
                         return null;
                       },

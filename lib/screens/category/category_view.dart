@@ -93,8 +93,8 @@ class _CategoryViewState extends State<CategoryView> {
                       );
                     },
                     child: CategoryCard(
-                      name: category['name']!,
-                      imageUrl: category['image'] ?? "unknown",
+                      name: category['name'] ?? "item",
+                      imageUrl: category['image_url'] ?? "unknown",
                       color: const Color.fromARGB(255, 241, 212, 170),
                     ),
                   );

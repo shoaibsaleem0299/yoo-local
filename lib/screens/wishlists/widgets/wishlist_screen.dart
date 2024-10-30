@@ -63,10 +63,9 @@ class _WishlistScreenState extends State<WishlistScreen> {
     });
   }
 
-  Future<void> addToCart(BuildContext context, String productId) async {
+  Future<void> addToCart(String productId) async {
     var token = await LocalData.getString(AppConstants.userToken);
     try {
-      final Dio _dio = Dio();
       String url = "${AppConstants.baseUrl}/cart/addToCart/$productId";
       Response response = await _dio.post(
         url,
@@ -110,27 +109,28 @@ class _WishlistScreenState extends State<WishlistScreen> {
         );
       }
     } catch (error) {
-      print('Failed to add to cart ${error}');
+      print('Failed to add to cart $error');
     }
   }
 
   Future<void> removeWishlist(String productId, String inventoryId) async {
-    var token = LocalData.getString(AppConstants.userToken);
+    var token = await LocalData.getString(AppConstants.userToken);
     try {
-      final Dio _dio = Dio();
       String url = "${AppConstants.baseUrl}/wishlist";
-      Response response = await _dio.delete(url,
-          options: Options(headers: {'Authorization': 'Bearer $token'}),
-          data: {
-            'product_id': productId,
-            'inventory_id': inventoryId,
-          });
+      Response response = await _dio.delete(
+        url,
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+        data: {
+          'product_id': productId,
+          'inventory_id': inventoryId,
+        },
+      );
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text(
-              'Item delete from wishlist successfully',
+              'Item deleted from wishlist successfully',
               style:
                   TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
@@ -143,6 +143,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
             duration: const Duration(seconds: 3),
           ),
         );
+        await getUserWishlist(); // Refresh wishlist after item is removed
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -162,7 +163,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
         );
       }
     } catch (error) {
-      print('Failed to remove from wishlist ${error}');
+      print('Failed to remove from wishlist $error');
     }
   }
 
@@ -172,7 +173,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('Wish List'),
+        title: const Text('Wishlist'),
         centerTitle: true,
       ),
       body: isLoading
@@ -220,8 +221,9 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                       IconButton(
                                           onPressed: () {
                                             removeWishlist(
-                                                inventory['product_id'],
-                                                inventory['inventory_id']);
+                                                inventory['product_id']
+                                                    .toString(),
+                                                inventory['id'].toString());
                                           },
                                           icon: Icon(Icons.remove_circle)),
                                       const SizedBox(width: 4),
@@ -272,10 +274,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                           ElevatedButton(
                                             onPressed: inStock
                                                 ? () {
-                                                    addToCart(
-                                                        context,
-                                                        inventory[
-                                                            'inventory_id']);
+                                                    addToCart(inventory['id']
+                                                        .toString());
                                                   }
                                                 : null,
                                             style: ElevatedButton.styleFrom(
@@ -314,19 +314,18 @@ class _WishlistScreenState extends State<WishlistScreen> {
                         ],
                       ),
                     )
-                  : Center(
-                      child: Text(
+                  : const Center(
+                      child:  Text(
                         'Wishlist is empty',
-                        style: TextStyle(fontSize: 18, color: Colors.grey),
+                       
                       ),
                     )
               : Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         'Please log in to view your wishlist',
-                        style: TextStyle(fontSize: 18, color: Colors.grey),
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton(

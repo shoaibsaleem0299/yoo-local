@@ -8,7 +8,7 @@ import 'package:yoo_local/screens/login/login_view.dart';
 import 'package:yoo_local/ui_fuctionality/local_data.dart';
 import 'package:yoo_local/widgets/counter.dart';
 
-class ProductDetailScreen extends StatelessWidget {
+class ProductDetailScreen extends StatefulWidget {
   final String name;
   final String price;
   final String image;
@@ -27,6 +27,13 @@ class ProductDetailScreen extends StatelessWidget {
     required this.productId,
     required this.inventory_id,
   });
+
+  @override
+  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
+}
+
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  int quantity = 1;
 
   // Show Login Dialog
   void _showLoginDialog(BuildContext context) {
@@ -63,10 +70,11 @@ class ProductDetailScreen extends StatelessWidget {
     if (token != null) {
       try {
         final Dio _dio = Dio();
-        String url = "${AppConstants.baseUrl}/cart/addToCart/$productId";
+        String url =
+            "${AppConstants.baseUrl}/cart/addToCart/${widget.productId}";
         Response response = await _dio.post(
           url,
-          data: {'quantity': 1},
+          data: {'quantity': quantity},
           options: Options(headers: {'Authorization': 'Bearer $token'}),
         );
 
@@ -123,8 +131,8 @@ class ProductDetailScreen extends StatelessWidget {
         Response response = await _dio.post(url,
             options: Options(headers: {'Authorization': 'Bearer $token'}),
             data: {
-              'product_id': productId,
-              'inventory_id': inventory_id,
+              'product_id': widget.productId,
+              'inventory_id': widget.inventory_id,
             });
 
         if (response.statusCode == 200) {
@@ -174,7 +182,7 @@ class ProductDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(name),
+        title: Text(widget.name),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -191,7 +199,7 @@ class ProductDetailScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Image.network(
-                    "${AppConstants.imageUrl}/${image}",
+                    widget.image,
                     height: 120,
                     width: 120,
                     fit: BoxFit.cover,
@@ -209,19 +217,19 @@ class ProductDetailScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          name,
+                          widget.name,
                           style: const TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(price,
+                        Text(widget.price,
                             style: const TextStyle(
                                 fontSize: 18, color: Colors.orange)),
                         const SizedBox(height: 8),
                         Text(
-                          description,
+                          widget.description,
                           style: const TextStyle(fontSize: 16),
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
@@ -239,7 +247,43 @@ class ProductDetailScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ItemCounter(initialQuantity: quatity),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.remove_circle,
+                          color: AppColors.primaryColor,
+                          size: 26,
+                        ),
+                        onPressed: () {
+                          if (quantity > 0) {
+                            setState(() {
+                              quantity--;
+                            });
+                          }
+                        },
+                      ),
+                      Text(
+                        quantity.toString(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.add_circle,
+                          color: AppColors.primaryColor,
+                          size: 26,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            quantity++;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                   ElevatedButton(
                     onPressed: () => addToCart(context),
                     style: ElevatedButton.styleFrom(

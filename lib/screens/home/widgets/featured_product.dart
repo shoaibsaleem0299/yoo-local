@@ -122,7 +122,7 @@ class _FeaturedProductState extends State<FeaturedProduct> {
                         image: product['image_url'] ?? "unkown",
                         description: product['description'] ?? "No Description",
                         quatity: 1,
-                        productId: product['product_id'].to,
+                        productId: product['product_id'],
                         inventory_id: product['id'] ?? 1,
                       ),
                     ),

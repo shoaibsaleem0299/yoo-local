@@ -151,7 +151,7 @@ class _CartScreenState extends State<CartScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Please log in'),
+              const Text('Please log in to view your cart'),
               const SizedBox(height: 16),
               AppButton(
                   title: "Login",
@@ -223,7 +223,7 @@ class _CartScreenState extends State<CartScreen> {
                               ),
                               child: Center(
                                 child: Image.network(
-                                  "${AppConstants.imageUrl}${product['featured_image']['path']}",
+                                  product['image_url'] ?? "unknown",
                                   width: 60,
                                   height: 80,
                                   fit: BoxFit.contain,
@@ -256,12 +256,23 @@ class _CartScreenState extends State<CartScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                Text(
-                                  '£${product['total'] ?? '0.0'}',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      '£${product['total'] ?? '0.0'}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      ' x ${product['quantity'] ?? '1'}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

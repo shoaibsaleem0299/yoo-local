@@ -1,15 +1,56 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
+import 'package:yoo_local/app_constant/app_constants.dart';
 import 'package:yoo_local/screens/home/widgets/categories_section.dart';
 import 'package:yoo_local/screens/home/widgets/featured_product.dart';
 import 'package:yoo_local/screens/home/widgets/home_footer.dart';
 import 'package:yoo_local/screens/home/widgets/image_slider.dart';
 import 'package:yoo_local/screens/home/widgets/order_section.dart';
 import 'package:yoo_local/screens/home/widgets/section_header.dart';
+import 'package:yoo_local/screens/login/login_view.dart';
 import 'package:yoo_local/widgets/location_widget.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool _isSearching = false;
+  final TextEditingController _searchController = TextEditingController();
+
+  void _toggleSearch() {
+    setState(() {
+      _isSearching = !_isSearching;
+      _searchController.clear();
+    });
+  }
+
+  Future<void> _performSearch() async {
+    String searchText = _searchController.text.trim();
+
+    if (searchText.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a search term')),
+      );
+      return;
+    }
+
+    try {
+      final response = await searchProduct(searchText);
+      if (response.isAvailable) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginView()),
+        );
+      }
+    } catch (error) {
+      print('Search error: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +58,35 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.secondaryColor,
         leading: IconButton(
-          icon: const Icon(
-            Icons.search,
+          icon: Icon(
+            _isSearching ? Icons.arrow_back : Icons.search,
             color: Colors.white,
             size: 26,
           ),
-          onPressed: () {
-            // Add your search functionality here
-          },
+          onPressed: _toggleSearch,
         ),
-        title: LocationWidget(),
+        title: _isSearching
+            ? TextField(
+                controller: _searchController,
+                decoration: const InputDecoration(
+                  hintText: 'Search...',
+                  border: InputBorder.none,
+                  hintStyle: TextStyle(color: Colors.white70),
+                ),
+                style: const TextStyle(color: Colors.white),
+                onSubmitted: (_) =>
+                    _performSearch(), // Trigger search on enter key
+              )
+            : LocationWidget(),
+        actions: _isSearching
+            ? [
+                IconButton(
+                  icon: Icon(Icons.search, color: Colors.white),
+                  onPressed:
+                      _performSearch, // Button to trigger search function
+                ),
+              ]
+            : [],
       ),
       body: const SafeArea(
         child: SingleChildScrollView(
@@ -53,7 +113,6 @@ class HomeScreen extends StatelessWidget {
                 heading: "Featured Products",
                 imageURL:
                     "https://cdn-icons-png.freepik.com/256/8510/8510223.png?semt=ais_hybrid",
-            
               ),
               FeaturedProduct(),
               SizedBox(height: 12),
@@ -61,7 +120,6 @@ class HomeScreen extends StatelessWidget {
                 heading: "Top Selling Products",
                 imageURL:
                     "https://cdn-icons-png.flaticon.com/512/771/771222.png",
-           
               ),
               FeaturedProduct(),
               SizedBox(height: 12),
@@ -69,7 +127,6 @@ class HomeScreen extends StatelessWidget {
                 heading: "Best Selling Products",
                 imageURL:
                     "https://cdn-icons-png.freepik.com/512/8465/8465733.png",
-          
               ),
               FeaturedProduct(),
               SizedBox(height: 6),
@@ -79,5 +136,50 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<dynamic> searchProduct(String query) async {
+    final Dio _dio = Dio();
+
+    try {
+      String url = '${AppConstants.baseUrl}/inventory/${query}';
+      Response response = await _dio.get(url);
+      if (response.statusCode == 200) {
+        return response.data['data']['values'];
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              'Product Not Found',
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+            backgroundColor: AppColors.primaryColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            'Product Not Found',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          backgroundColor: AppColors.primaryColor,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
   }
 }
