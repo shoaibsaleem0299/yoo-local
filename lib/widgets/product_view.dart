@@ -6,7 +6,6 @@ import 'package:yoo_local/screens/home/widgets/featured_product.dart';
 import 'package:yoo_local/screens/home/widgets/section_header.dart';
 import 'package:yoo_local/screens/login/login_view.dart';
 import 'package:yoo_local/ui_fuctionality/local_data.dart';
-import 'package:yoo_local/widgets/counter.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final String name;
