@@ -11,69 +11,51 @@ class CreateAccountView extends StatefulWidget {
 }
 
 class _CreateAccountViewState extends State<CreateAccountView> {
-  @override
-  Widget build(BuildContext context) {
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController usernameController = TextEditingController();
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
-    final TextEditingController confirmPasswordController =
-        TextEditingController();
-    bool isPasswordVisible = false;
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+  bool isPasswordVisible = false;
+  bool isPasswordVisible2 = false;
 
-    void togglePasswordVisibility() {
-      setState(() {
-        isPasswordVisible = !isPasswordVisible;
-      });
-    }
+  void togglePasswordVisibility() {
+    setState(() {
+      isPasswordVisible = !isPasswordVisible;
+    });
+  }
 
-    final formKey = GlobalKey<FormState>();
-    final Dio _dio = Dio();
-    String errorMessage = '';
+  void togglePasswordVisibility2() {
+    setState(() {
+      isPasswordVisible2 = !isPasswordVisible2;
+    });
+  }
 
-    Future<void> createAccount() async {
-      if (formKey.currentState!.validate()) {
-        try {
-          String url = "${AppConstants.baseUrl}/register";
-          Response response = await _dio.post(
-            url,
-            data: {
-              'name': nameController.text,
-              'email': emailController.text,
-              'username': usernameController.text,
-              'password': passwordController.text,
-              'confirm_password': confirmPasswordController.text,
-            },
-          );
-          if (response.statusCode == 200) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Center(
-                  child: Text(
-                    'Registration failed: User Alread Exists',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                backgroundColor: AppColors.primaryColor,
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                duration: Duration(seconds: 3),
-              ),
-            );
-            Navigator.pop(context);
-          }
-        } catch (e) {
+  final formKey = GlobalKey<FormState>();
+  final Dio _dio = Dio();
+  String errorMessage = '';
+
+  Future<void> createAccount() async {
+    if (formKey.currentState!.validate()) {
+      try {
+        String url = "${AppConstants.baseUrl}/register";
+        Response response = await _dio.post(
+          url,
+          data: {
+            'name': nameController.text,
+            'email': emailController.text,
+            'username': usernameController.text,
+            'password': passwordController.text,
+            'confirm_password': confirmPasswordController.text,
+          },
+        );
+        if (response.statusCode == 200) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Center(
                 child: Text(
-                  'Registration failed, User alread exists',
+                  'Registration failed: User Alread Exists',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -89,11 +71,37 @@ class _CreateAccountViewState extends State<CreateAccountView> {
               duration: Duration(seconds: 3),
             ),
           );
+          Navigator.pop(context);
         }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Center(
+              child: Text(
+                'Registration failed, User alread exists',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            backgroundColor: AppColors.primaryColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            duration: Duration(seconds: 3),
+          ),
+        );
       }
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 64.0),
@@ -194,19 +202,19 @@ class _CreateAccountViewState extends State<CreateAccountView> {
                     TextFormField(
                       controller: confirmPasswordController,
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: 'Confirm Password',
                         border: UnderlineInputBorder(),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            isPasswordVisible
+                            isPasswordVisible2
                                 ? Icons.visibility
                                 : Icons.visibility_off,
                             color: AppColors.secondaryColor,
                           ),
-                          onPressed: togglePasswordVisibility,
+                          onPressed: togglePasswordVisibility2,
                         ),
                       ),
-                      obscureText: !isPasswordVisible,
+                      obscureText: !isPasswordVisible2,
                       style: TextStyle(color: AppColors.secondaryColor),
                       validator: (value) {
                         if (value == null || value.isEmpty) {

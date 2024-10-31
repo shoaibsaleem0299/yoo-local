@@ -13,65 +13,68 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  @override
-  Widget build(BuildContext context) {
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
-    bool isPasswordVisible = false;
+  // Move these out of the build method
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool isPasswordVisible = false; // State variable for password visibility
 
-    void togglePasswordVisibility() {
-      setState(() {
-        isPasswordVisible = !isPasswordVisible;
-      });
-    }
+  // Create a form key to validate the form
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final Dio _dio = Dio();
 
-    final formKey = GlobalKey<FormState>();
-    final Dio _dio = Dio();
+  void togglePasswordVisibility() {
+    setState(() {
+      isPasswordVisible = !isPasswordVisible; // Toggle password visibility
+    });
+  }
 
-    Future<void> login() async {
-      if (formKey.currentState!.validate()) {
-        try {
-          String url = "${AppConstants.baseUrl}/login";
-          Response response = await _dio.post(
-            url,
-            data: {
-              'login': emailController.text,
-              'password': passwordController.text,
-            },
-          );
-          if (response.statusCode == 200) {
-            String token = response.data['data']['token'];
-            LocalData.addString(AppConstants.userToken, token);
-            String name = response.data['data']['name'];
-            LocalData.addString(AppConstants.username, name);
-            String email = response.data['data']['email'];
-            LocalData.addString(AppConstants.userEmail, email);
-            Navigator.pop(context);
-          }
-        } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Login failed, Credentials not matched',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              backgroundColor: AppColors.primaryColor,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              duration: Duration(seconds: 3),
-            ),
-          );
+  Future<void> login() async {
+    if (formKey.currentState!.validate()) {
+      try {
+        String url = "${AppConstants.baseUrl}/login";
+        Response response = await _dio.post(
+          url,
+          data: {
+            'login': emailController.text,
+            'password': passwordController.text,
+          },
+        );
+        if (response.statusCode == 200) {
+          String token = response.data['data']['token'];
+          LocalData.addString(AppConstants.userToken, token);
+          String name = response.data['data']['name'];
+          LocalData.addString(AppConstants.username, name);
+          String email = response.data['data']['email'];
+          LocalData.addString(AppConstants.userEmail, email);
+          Navigator.pop(context);
         }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Login failed, Credentials not matched',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            backgroundColor: AppColors.primaryColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            duration: Duration(seconds: 3),
+          ),
+        );
       }
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 64.0),
@@ -143,7 +146,7 @@ class _LoginViewState extends State<LoginView> {
               SizedBox(height: 60),
               ElevatedButton(
                 onPressed: () {
-                  login();
+                  login(); // Call login method
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(double.infinity, 50),

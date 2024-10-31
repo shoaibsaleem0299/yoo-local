@@ -1,6 +1,4 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:yoo_local/app_constant/app_constants.dart';
 import 'package:yoo_local/widgets/app_button.dart';
 
 class CheckoutView extends StatelessWidget {
@@ -13,31 +11,8 @@ class CheckoutView extends StatelessWidget {
       required this.discount,
       required this.delivery});
 
-      
-
   @override
   Widget build(BuildContext context) {
-
-
-
-    Future<void> _initiateCheckout() async {
-    final dio = Dio();
-    final endpoint = '${AppConstants.baseUrl}/checkout';
-    
-
-    try {
-      final response = await dio.post(endpoint, options: Options(headers: {}));
-      if (response.statusCode == 200) {
-        print('Checkout successful: ${response.data}');
-        // Navigate to a success page or update the UI as needed.
-      } else {
-        print('Checkout failed: ${response.statusMessage}');
-      }
-    } catch (e) {
-      print('Error during checkout: $e');
-    }
-  }
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
