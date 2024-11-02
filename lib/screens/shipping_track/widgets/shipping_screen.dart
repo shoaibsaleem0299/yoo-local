@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
+import 'package:yoo_local/screens/shipping_track/widgets/tracking_details.dart';
 import 'package:yoo_local/widgets/app_button.dart';
 
 class OrderTrackingScreen extends StatelessWidget {
@@ -9,7 +10,6 @@ class OrderTrackingScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        
         title: const Text('Top Order Tracking'),
         centerTitle: true,
       ),
@@ -45,7 +45,14 @@ class OrderTrackingScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 8.0),
-                    AppButton(title: "Search", onTap: () {})
+                    AppButton(
+                        title: "Search",
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => OrderTrackingView()));
+                        })
                   ],
                 ),
                 SizedBox(height: 32.0),

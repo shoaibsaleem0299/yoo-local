@@ -26,7 +26,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
 
   Future<void> getUserWishlist() async {
     var userToken = await LocalData.getString(AppConstants.userToken);
-    if (userToken != null) {
+    if (userToken!.isNotEmpty) {
       setState(() {
         isLoggedIn = true;
       });
@@ -63,7 +63,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
     });
   }
 
-  Future<void> addToCart(String productId) async {
+  Future<void> addToCart(int productId) async {
     var token = await LocalData.getString(AppConstants.userToken);
     try {
       String url = "${AppConstants.baseUrl}/cart/addToCart/$productId";
@@ -113,7 +113,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
     }
   }
 
-  Future<void> removeWishlist(String productId, String inventoryId) async {
+  Future<void> removeWishlist(int productId, int inventoryId) async {
     var token = await LocalData.getString(AppConstants.userToken);
     try {
       String url = "${AppConstants.baseUrl}/wishlist";
@@ -221,9 +221,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                       IconButton(
                                           onPressed: () {
                                             removeWishlist(
-                                                inventory['product_id']
-                                                    .toString(),
-                                                inventory['id'].toString());
+                                                inventory['product_id'],
+                                                inventory['id']);
                                           },
                                           icon: Icon(Icons.remove_circle)),
                                       const SizedBox(width: 4),
@@ -274,8 +273,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                           ElevatedButton(
                                             onPressed: inStock
                                                 ? () {
-                                                    addToCart(inventory['id']
-                                                        .toString());
+                                                    addToCart(inventory['id']);
                                                   }
                                                 : null,
                                             style: ElevatedButton.styleFrom(
@@ -315,9 +313,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
                       ),
                     )
                   : const Center(
-                      child:  Text(
+                      child: Text(
                         'Wishlist is empty',
-                       
                       ),
                     )
               : Center(

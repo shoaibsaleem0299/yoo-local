@@ -47,9 +47,9 @@ class _FeaturedProductState extends State<FeaturedProduct> {
     }
   }
 
-  Future<void> addToCart(String productId) async {
+  Future<void> addToCart(int productId) async {
     var userToken = await LocalData.getString(AppConstants.userToken);
-    if (userToken != null) {
+    if (userToken!.isNotEmpty) {
       try {
         String url = "${AppConstants.baseUrl}/cart/addToCart/$productId";
         Response response = await _dio.post(
@@ -122,14 +122,14 @@ class _FeaturedProductState extends State<FeaturedProduct> {
                         image: product['image_url'] ?? "unkown",
                         description: product['description'] ?? "No Description",
                         quatity: 1,
-                        productId: product['product_id'],
-                        inventory_id: product['id'] ?? 1,
+                        productId: product['id'],
+                        inventory_id: product['product_id'] ?? 1,
                       ),
                     ),
                   );
                 },
                 onAddToCart: () {
-                  addToCart(product['id'].toString());
+                  addToCart(product['id']);
                 },
                 onAddToFavorite: () {},
               ),

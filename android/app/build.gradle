@@ -20,7 +20,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.yoo_local"
-        minSdk = flutter.minSdkVersion
+        minSdk = 21
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -36,3 +36,7 @@ android {
 flutter {
     source = "../.."
 }
+
+// dependencies {
+//     implementation 'com.google.android.material:material:1.8.0'
+// }

@@ -7,8 +7,8 @@ import 'package:yoo_local/screens/home/widgets/featured_product.dart';
 import 'package:yoo_local/screens/home/widgets/home_footer.dart';
 import 'package:yoo_local/screens/home/widgets/image_slider.dart';
 import 'package:yoo_local/screens/home/widgets/order_section.dart';
+import 'package:yoo_local/screens/home/widgets/search_products.dart';
 import 'package:yoo_local/screens/home/widgets/section_header.dart';
-import 'package:yoo_local/screens/login/login_view.dart';
 import 'package:yoo_local/widgets/location_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -34,17 +34,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (searchText.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a search term')),
+        SnackBar(
+          content: Text('Please Enter Search Value'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
       );
       return;
     }
-
     try {
       final response = await searchProduct(searchText);
-      if (response.isAvailable) {
+      if (response != null) {
+        print(response);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LoginView()),
+          MaterialPageRoute(
+              builder: (context) => SearchProductsView(products: response)),
         );
       }
     } catch (error) {
@@ -142,42 +147,26 @@ class _HomeScreenState extends State<HomeScreen> {
     final Dio _dio = Dio();
 
     try {
-      String url = '${AppConstants.baseUrl}/inventory/${query}';
-      Response response = await _dio.get(url);
+      String url = '${AppConstants.baseUrl}/inventory';
+      Response response = await _dio.get(url, data: {"search": query});
       if (response.statusCode == 200) {
+        print(response.data['data']['values']);
         return response.data['data']['values'];
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text(
-              'Product Not Found',
-              style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-            ),
-            backgroundColor: AppColors.primaryColor,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            duration: const Duration(seconds: 3),
+            content: Text('Product Not Found'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
           ),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text(
-            'Product Not Found',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          backgroundColor: AppColors.primaryColor,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          duration: const Duration(seconds: 3),
+          content: Text('Product Not Found'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
         ),
       );
     }

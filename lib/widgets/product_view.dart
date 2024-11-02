@@ -34,7 +34,6 @@ class ProductDetailScreen extends StatefulWidget {
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int quantity = 1;
 
-  // Show Login Dialog
   void _showLoginDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -45,13 +44,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
               child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog first
+                Navigator.of(context).pop();
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => LoginView()));
               },
@@ -63,14 +62,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  // Add to Cart Function
   Future<void> addToCart(BuildContext context) async {
     var token = await LocalData.getString(AppConstants.userToken);
-    if (token != null) {
+    if (token != null && token.isNotEmpty) {
       try {
         final Dio _dio = Dio();
         String url =
-            "${AppConstants.baseUrl}/cart/addToCart/${widget.productId}";
+            "${AppConstants.baseUrl}/cart/addToCart/${widget.inventory_id}";
         Response response = await _dio.post(
           url,
           data: {'quantity': quantity},
@@ -123,15 +121,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   // Add to Wishlist Function
   Future<void> addToWishlist(BuildContext context) async {
     var token = await LocalData.getString(AppConstants.userToken);
-    if (token != null) {
+    if (token != null && token.isNotEmpty) {
       try {
         final Dio _dio = Dio();
         String url = "${AppConstants.baseUrl}/wishlist/add";
         Response response = await _dio.post(url,
             options: Options(headers: {'Authorization': 'Bearer $token'}),
             data: {
-              'product_id': widget.productId,
               'inventory_id': widget.inventory_id,
+              'product_id': widget.productId,
             });
 
         if (response.statusCode == 200) {

@@ -1,199 +1,180 @@
-// import 'package:dio/dio.dart'; // For Dio
-// import 'package:flutter/material.dart';
-// import 'package:flutter_stripe/flutter_stripe.dart';
-// import 'package:yoo_local/app_constant/app_constants.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:yoo_local/app_constant/app_constants.dart';
 
-// Map<String, dynamic>? paymentIntent;
+class PaymentScreen extends StatefulWidget {
+  @override
+  _PaymentScreenState createState() => _PaymentScreenState();
+}
 
-// Future<void> makePayment() async {
-//   try {
-//     // STEP 1: Create Payment Intent
-//     paymentIntent = await createPaymentIntent('100', 'USD');
+class _PaymentScreenState extends State<PaymentScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _cardNumberController = TextEditingController();
+  final _expiryMonthController = TextEditingController();
+  final _expiryYearController = TextEditingController();
+  final _cvcController = TextEditingController();
 
-//     // STEP 2: Initialize Payment Sheet
-//     await Stripe.instance.initPaymentSheet(
-//       paymentSheetParameters: SetupPaymentSheetParameters(
-//         paymentIntentClientSecret:
-//             paymentIntent!['client_secret'], // Gotten from payment intent
-//         style: ThemeMode.light,
-//         merchantDisplayName: 'Ikay',
-//       ),
-//     );
+  Map<String, dynamic>? paymentIntent;
 
-//     // STEP 3: Display Payment sheet
-//     await displayPaymentSheet();
-//   } catch (err) {
-//     print('Error in makePayment: $err');
-//     throw Exception(err);
-//   }
-// }
+  
 
-// Future<Map<String, dynamic>> createPaymentIntent(
-//     String amount, String currency) async {
-//   try {
-//     // Request body
-//     Map<String, dynamic> body = {
-//       'amount': calculateAmount(amount),
-//       'currency': currency,
-//     };
+  Future<void> makePayment() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        // STEP 1: Create Payment Intent
+        paymentIntent = await createPaymentIntent('100', 'USD');
 
-//     // Initialize Dio
-//     Dio dio = Dio();
+        // Extract the 'id' from paymentIntent to send it to the backend developer
+        final paymentId = paymentIntent!['id'];
+        print('Payment ID: $paymentId');
 
-//     // Make post request to Stripe
-//     final response = await dio.post(
-//       'https://api.stripe.com/v1/payment_intents',
-//       options: Options(
-//         headers: {
-//           'Authorization': 'Bearer ${AppConstants.stripeSecret}',
-//           'Content-Type': 'application/x-www-form-urlencoded',
-//         },
-//       ),
-//       data: body,
-//     );
+        // STEP 2: Create a token from the card details
+        final token = await Stripe.instance.createToken(CreateTokenParams.card(
+          params: CardTokenParams(
+            // Optional: Add additional info here
+            type: TokenType.Card,
+          ),
+          // This is where you'll create the token from the card fields
+        ));
 
-//     return response.data; // Return the response data
-//   } catch (err) {
-//     print('Error in createPaymentIntent: $err');
-//     throw Exception(err.toString());
-//   }
-// }
+        print(
+            '==================================Token: ${token.id}'); // Send this token to your backend for processing
 
-// Future<void> displayPaymentSheet() async {
-//   try {
-//     await Stripe.instance.presentPaymentSheet();
-//     paymentIntent = null; // Clear paymentIntent after successful payment
-//   } on StripeException catch (e) {
-//     print('Stripe Error: ${e}');
-//   } catch (e) {
-//     print('General Error: $e');
-//   }
-// }
+        // STEP 3: Initialize Payment Sheet
+        await Stripe.instance.initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+            paymentIntentClientSecret: paymentIntent!['client_secret'],
+            style: ThemeMode.light,
+            merchantDisplayName: 'Ikay',
+          ),
+        );
 
-// int calculateAmount(String amount) {
-//   return (int.parse(amount) * 100); // Converts dollars to cents
-// }
+        // STEP 4: Display Payment sheet
+        await displayPaymentSheet();
+      } catch (err) {
+        print('Error in makePayment: $err');
+        throw Exception(err);
+      }
+    }
+  }
 
-// // Example Flutter app to call makePayment
+  Future<Map<String, dynamic>> createPaymentIntent(
+      String amount, String currency) async {
+    try {
+      // Request body
+      Map<String, dynamic> body = {
+        'amount': calculateAmount(amount),
+        'currency': currency,
+      };
 
-// class TestView extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text('Payment')),
-//       body: Center(
-//         child: ElevatedButton(
-//           onPressed: () async {
-//             await makePayment();
-//           },
-//           child: Text('Make Payment'),
-//         ),
-//       ),
-//     );
-//   }
-// }
+      // Initialize Dio
+      Dio dio = Dio();
 
-// import 'package:flutter/material.dart';
-// import 'package:flutter_stripe/flutter_stripe.dart';
-// import 'package:http/http.dart' as http;
-// import 'dart:convert';
+      // Make post request to Stripe
+      final response = await dio.post(
+        'https://api.stripe.com/v1/payment_intents',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${AppConstants.stripeSecret}',
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        ),
+        data: body,
+      );
 
-// void main() {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   Stripe.publishableKey =
-//       'your-publishable-key'; // Replace with your Stripe publishable key
-//   runApp(MyApp());
-// }
+      return response.data; // Return the response data
+    } catch (err) {
+      print('Error in createPaymentIntent: $err');
+      throw Exception(err.toString());
+    }
+  }
 
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Stripe Payment Example',
-//       home: PaymentScreen(),
-//     );
-//   }
-// }
+  Future<void> displayPaymentSheet() async {
+    try {
+      await Stripe.instance.presentPaymentSheet();
+      paymentIntent = null; // Clear paymentIntent after successful payment
+    } on StripeException catch (e) {
+      print('Stripe Error: ${e}');
+    } catch (e) {
+      print('General Error: $e');
+    }
+  }
 
-// class PaymentScreen extends StatefulWidget {
-//   @override
-//   _PaymentScreenState createState() => _PaymentScreenState();
-// }
+  int calculateAmount(String amount) {
+    return (int.parse(amount) * 100); // Converts dollars to cents
+  }
 
-// class _PaymentScreenState extends State<PaymentScreen> {
-//   late CardFieldInputDetails _cardDetails;
-
-//   Future<void> _handlePayment() async {
-//     try {
-//       // Step 1: Call backend to create Payment Intent
-//       final response = await http.post(
-//         Uri.parse('https://your-backend-url.com/create-payment-intent'),
-//         headers: {'Content-Type': 'application/json'},
-//         body: json.encode({
-//           'amount': 1000,
-//           'currency': 'usd'
-//         }), // Replace with actual amount and currency
-//       );
-
-//       final paymentIntentData = json.decode(response.body);
-//       final clientSecret = paymentIntentData['client_secret'];
-
-//       // Step 2: Confirm Payment on the frontend
-//       await Stripe.instance.confirmPayment(
-//         clientSecret,
-//         PaymentMethodParams.card(
-//           paymentMethodData: PaymentMethodData(
-//             billingDetails: BillingDetails(
-//               email: 'test@example.com',
-//               phone: '+1234567890',
-//               address: Address(
-//                 city: 'San Francisco',
-//                 country: 'US',
-//                 line1: '123 Street',
-//                 line2: '',
-//                 state: 'CA',
-//                 postalCode: '94107',
-//               ),
-//             ),
-//           ),
-//         ),
-//       );
-
-//       // Payment succeeded
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(content: Text('Payment successful!')),
-//       );
-//     } catch (error) {
-//       // Payment failed
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(content: Text('Payment failed: $error')),
-//       );
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text('Stripe Payment')),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           children: [
-//             CardField(
-//               onCardChanged: (cardDetails) {
-//                 setState(() {
-//                   _cardDetails = cardDetails!;
-//                 });
-//               },
-//             ),
-//             SizedBox(height: 20),
-//             ElevatedButton(
-//               onPressed: _cardDetails.complete ? _handlePayment : null,
-//               child: Text('Pay Now'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Payment')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _cardNumberController,
+                decoration: InputDecoration(labelText: 'Card Number'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter card number';
+                  }
+                  return null;
+                },
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _expiryMonthController,
+                      decoration:
+                          InputDecoration(labelText: 'Expiry Month (MM)'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter expiry month';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _expiryYearController,
+                      decoration:
+                          InputDecoration(labelText: 'Expiry Year (YY)'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter expiry year';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              TextFormField(
+                controller: _cvcController,
+                decoration: InputDecoration(labelText: 'CVC'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter CVC';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: makePayment,
+                child: Text('Make Payment'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

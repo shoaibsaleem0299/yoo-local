@@ -255,7 +255,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
   Future<void> addToCart(BuildContext context, String productId) async {
     var token = await LocalData.getString(AppConstants.userToken);
-    if (token != null) {
+    if (token!.isNotEmpty) {
       try {
         final Dio _dio = Dio();
         String url = "${AppConstants.baseUrl}/cart/addToCart/$productId";
@@ -312,7 +312,7 @@ class _ResultScreenState extends State<ResultScreen> {
   Future<void> addToWishlist(
       BuildContext context, String productId, String inventory_id) async {
     var token = await LocalData.getString(AppConstants.userToken);
-    if (token != null) {
+    if (token!.isNotEmpty) {
       try {
         final Dio _dio = Dio();
         String url = "${AppConstants.baseUrl}/wishlist/add";

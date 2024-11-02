@@ -27,7 +27,7 @@ class _CartScreenState extends State<CartScreen> {
 
   Future<void> getUserCart() async {
     var userToken = await LocalData.getString(AppConstants.userToken);
-    if (userToken != null) {
+    if (userToken!.isNotEmpty) {
       isLoggedIn = true; // User is logged in
       try {
         String url = "${AppConstants.baseUrl}/cart/cart_by_user";
@@ -65,11 +65,10 @@ class _CartScreenState extends State<CartScreen> {
   Future<void> removeItemFromCart(String cartId, String inventoryId) async {
     var userToken = await LocalData.getString(AppConstants.userToken);
 
-    if (userToken != null) {
+    if (userToken!.isNotEmpty) {
       try {
         String url = "https://yoolocal.co.uk/api/cart/removeItem";
 
-        // Prepare the request body
         final requestBody = {
           'cart_id': cartId,
           'inventory_id': inventoryId,
@@ -89,7 +88,6 @@ class _CartScreenState extends State<CartScreen> {
 
         // Check the response status code
         if (response.statusCode == 200) {
-          // Handle successful removal of item
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Item removed successfully!'),
@@ -97,8 +95,6 @@ class _CartScreenState extends State<CartScreen> {
               duration: Duration(seconds: 2),
             ),
           );
-
-          // Optionally, refresh the cart data
           getUserCart();
         } else {
           // Handle error case
@@ -121,7 +117,6 @@ class _CartScreenState extends State<CartScreen> {
         );
       }
     } else {
-      // Handle case where user is not logged in
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('You need to log in to remove items.'),
@@ -341,6 +336,7 @@ class _CartScreenState extends State<CartScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => CheckoutView(
+                                  cartId: userCartData['id'],
                                   total: userCartData['grand_total'],
                                   discount: userCartData['discount'],
                                   delivery: userCartData['shipping'],
