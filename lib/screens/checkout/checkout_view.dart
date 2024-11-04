@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
 import 'package:yoo_local/app_constant/app_constants.dart';
+import 'package:yoo_local/screens/settings/widgets/order_history_view.dart';
 import 'package:yoo_local/ui_fuctionality/local_data.dart';
 
 Map<String, dynamic>? paymentIntent;
@@ -24,6 +25,7 @@ class CheckoutView extends StatefulWidget {
 }
 
 class _CheckoutViewState extends State<CheckoutView> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   CardFieldInputDetails? _cardDetails;
   final Dio _dio = Dio();
   final emailController = TextEditingController();
@@ -39,61 +41,65 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   Future<void> placeOrder(String token) async {
     var userToken = await LocalData.getString(AppConstants.userToken);
-    if (userToken != null) {
-      try {
-        final url = "${AppConstants.baseUrl}/checkout/${widget.cartId}";
-        final requestBody = {
-          'stripe_token': token,
-          'email': emailController.text,
-          'first_name': firstNameController.text,
-          'phone_number': phoneNumberController.text,
-          'address_line_1': addressLine1Controller.text,
-          'address_line_2': addressLine2Controller.text,
-          'city': cityController.text,
-          'state': stateController.text,
-          'country': countryController.text,
-          'zip_code': zipCodeController.text,
-        };
+    if (formKey.currentState!.validate()) {
+      if (userToken!.isNotEmpty) {
+        try {
+          final url = "${AppConstants.baseUrl}/checkout/${widget.cartId}";
+          final requestBody = {
+            'stripe_token': token,
+            'email': emailController.text,
+            'first_name': firstNameController.text,
+            'phone_number': phoneNumberController.text,
+            'address_line_1': addressLine1Controller.text,
+            'address_line_2': addressLine2Controller.text,
+            'city': cityController.text,
+            'state': stateController.text,
+            'country': countryController.text,
+            'zip_code': zipCodeController.text,
+          };
 
-        Response response = await _dio.post(
-          url,
-          data: requestBody,
-          options: Options(
-            headers: {
-              'Authorization': 'Bearer $userToken',
-              'Content-Type': 'application/json',
-            },
+          Response response = await _dio.post(
+            url,
+            data: requestBody,
+            options: Options(
+              headers: {
+                'Authorization': 'Bearer $userToken',
+                'Content-Type': 'application/json',
+              },
+            ),
+          );
+          if (response.statusCode == 200) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Order Place successfully!'),
+                backgroundColor: AppColors.primaryColor,
+                duration: Duration(seconds: 2),
+              ),
+            );
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => OrderHistoryView()));
+          } else {
+            // Handle error case
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to place Order. Please try again.'),
+                backgroundColor: Colors.red,
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
+        } catch (e) {
+          print("error on place order ${e}");
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('You need to logged In'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 2),
           ),
         );
-        if (response.statusCode == 200) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Order Place successfully!'),
-              backgroundColor: AppColors.primaryColor,
-              duration: Duration(seconds: 2),
-            ),
-          );
-        } else {
-          // Handle error case
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to place Order. Please try again.'),
-              backgroundColor: Colors.red,
-              duration: Duration(seconds: 2),
-            ),
-          );
-        }
-      } catch (e) {
-        print("error on place order ${e}");
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('You need to logged In'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 2),
-        ),
-      );
     }
   }
 
@@ -139,66 +145,80 @@ class _CheckoutViewState extends State<CheckoutView> {
           children: [
             _buildSummary(), // Added summary widget
             const SizedBox(height: 20),
-            const SectionTitle(title: 'Contact Information'),
-            const SizedBox(height: 10),
-            _buildTextField(label: 'Email', controller: emailController),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                    child: _buildTextField(
-                        label: 'First Name', controller: firstNameController)),
-                const SizedBox(width: 10),
-                Expanded(
-                    child: _buildTextField(
-                        label: 'Last Name', controller: secondNameController)),
-              ],
-            ),
-            const SizedBox(height: 10),
-            _buildTextField(
-                label: 'Phone Number', controller: phoneNumberController),
-            const SizedBox(height: 10),
-            // Row(
-            //   children: [
-            //     Checkbox(
-            //       value: false,
-            //       onChanged: (bool? value) {},
-            //     ),
-            //     const Text('Email Me With News And Offers'),
-            //   ],
-            // ),
-            const SizedBox(height: 20),
-            const SectionTitle(title: 'Shipping Address'),
-            const SizedBox(height: 10),
-            _buildTextField(
-                label: 'Address Line 1', controller: addressLine1Controller),
-            const SizedBox(height: 10),
-            _buildTextField(
-                label: 'Address Line 2', controller: addressLine2Controller),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                    child: _buildTextField(
-                        label: 'State', controller: stateController)),
-                const SizedBox(width: 10),
-                Expanded(
-                    child: _buildTextField(
-                        label: 'City', controller: cityController)),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                    child: _buildTextField(
-                        label: 'Country', controller: countryController)),
-                const SizedBox(width: 10),
-                Expanded(
-                    child: _buildTextField(
-                        label: 'Zip Code', controller: zipCodeController)),
-              ],
-            ),
+            Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    const SectionTitle(title: 'Contact Information'),
+                    const SizedBox(height: 10),
+                    _buildTextField(
+                        label: 'Email', controller: emailController),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: _buildTextField(
+                                label: 'First Name',
+                                controller: firstNameController)),
+                        const SizedBox(width: 10),
+                        Expanded(
+                            child: _buildTextField(
+                                label: 'Last Name',
+                                controller: secondNameController)),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    _buildTextField(
+                        label: 'Phone Number',
+                        controller: phoneNumberController),
+                    const SizedBox(height: 10),
+                    // Row(
+                    //   children: [
+                    //     Checkbox(
+                    //       value: false,
+                    //       onChanged: (bool? value) {},
+                    //     ),
+                    //     const Text('Email Me With News And Offers'),
+                    //   ],
+                    // ),
+                    const SizedBox(height: 20),
+                    const SectionTitle(title: 'Shipping Address'),
+                    const SizedBox(height: 10),
+                    _buildTextField(
+                        label: 'Address Line 1',
+                        controller: addressLine1Controller),
+                    const SizedBox(height: 10),
+                    _buildTextField(
+                        label: 'Address Line 2',
+                        controller: addressLine2Controller),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: _buildTextField(
+                                label: 'State', controller: stateController)),
+                        const SizedBox(width: 10),
+                        Expanded(
+                            child: _buildTextField(
+                                label: 'City', controller: cityController)),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: _buildTextField(
+                                label: 'Country',
+                                controller: countryController)),
+                        const SizedBox(width: 10),
+                        Expanded(
+                            child: _buildTextField(
+                                label: 'Zip Code',
+                                controller: zipCodeController)),
+                      ],
+                    ),
+                  ],
+                )),
             const SizedBox(height: 10),
             const SectionTitle(title: 'Payment Method'),
             const SizedBox(height: 10),
@@ -327,8 +347,14 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   Widget _buildTextField(
       {required String label, required TextEditingController controller}) {
-    return TextField(
+    return TextFormField(
       controller: controller,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'This field is required';
+        }
+        return null;
+      },
       decoration: InputDecoration(
         labelText: label,
         border: const OutlineInputBorder(),

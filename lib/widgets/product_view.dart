@@ -68,7 +68,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       try {
         final Dio _dio = Dio();
         String url =
-            "${AppConstants.baseUrl}/cart/addToCart/${widget.inventory_id}";
+            "${AppConstants.baseUrl}/cart/addToCart/${widget.productId}";
         Response response = await _dio.post(
           url,
           data: {'quantity': quantity},
@@ -128,8 +128,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         Response response = await _dio.post(url,
             options: Options(headers: {'Authorization': 'Bearer $token'}),
             data: {
-              'inventory_id': widget.inventory_id,
-              'product_id': widget.productId,
+              'inventory_id': widget.productId,
+              'product_id': widget.inventory_id,
             });
 
         if (response.statusCode == 200) {
