@@ -110,7 +110,10 @@ class _FeaturedProductState extends State<FeaturedProduct> {
               margin: const EdgeInsets.only(right: 8.0),
               child: ProductCard(
                 name: product['title'] ?? "item",
-                price: product['sale_price'] ?? "0.0",
+                price: product['has_offer']
+                    ? double.parse(product['offer_price']).toStringAsFixed(2)
+                    : double.parse(product['sale_price'] ?? "0.0")
+                        .toStringAsFixed(2),
                 image: product['image_url'] ?? "unknown",
                 onTap: () {
                   Navigator.push(
@@ -118,12 +121,16 @@ class _FeaturedProductState extends State<FeaturedProduct> {
                     MaterialPageRoute(
                       builder: (context) => ProductDetailScreen(
                         name: product['title'] ?? "item",
-                        price: product['sale_price'] ?? "0.0",
+                        price: product['has_offer']
+                            ? double.parse(product['offer_price'])
+                                .toStringAsFixed(2)
+                            : double.parse(product['sale_price'] ?? "0.0")
+                                .toStringAsFixed(2),
                         image: product['image_url'] ?? "unkown",
                         description: product['description'] ?? "No Description",
                         quatity: 1,
-                        productId: product['id'],
-                        inventory_id: product['product_id'] ?? 1,
+                        productId: product['product_id'],
+                        inventory_id: product['id'] ?? 1,
                       ),
                     ),
                   );

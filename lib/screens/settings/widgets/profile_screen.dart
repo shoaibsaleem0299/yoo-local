@@ -17,6 +17,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? userToken = '';
   var username = null;
   var userEmail = null;
+  bool isLoading = true; // Loading state
+
   Future<void> getUserData() async {
     var Token = await LocalData.getString(AppConstants.userToken);
     var name = await LocalData.getString(AppConstants.username);
@@ -25,6 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       userToken = Token;
       username = name;
       userEmail = Email;
+      isLoading = false; // Data loading completed
     });
   }
 
@@ -43,7 +46,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (userToken != null && userToken!.isNotEmpty) {
+    if (isLoading) {
+      // Show loading indicator while loading data
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (userToken!.isNotEmpty) {
       return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -65,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  username,
+                  username ?? '',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -73,7 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 SizedBox(height: 6.0),
                 Text(
-                  userEmail,
+                  userEmail ?? '',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -94,10 +106,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: Text(
-                    'Order History',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: Icon(
+                          Icons.history,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        'Order Tracking',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(height: 32.0),
@@ -115,10 +139,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: Text(
-                    'Order Tracking',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: Icon(
+                          Icons.local_shipping,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        'Order Tracking',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(height: 32.0),
@@ -136,10 +172,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: Text(
-                    'Home',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: Icon(
+                          Icons.home,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        'Home',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(height: 32.0),
@@ -155,10 +203,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: Text(
-                    'Log Out',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: Icon(
+                          Icons.logout,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        'Log Out',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -167,43 +227,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       );
     } else {
-      return Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text("Please login"),
-            AppButton(
-              title: "Login",
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LoginView()));
-              },
-            ),
-          ],
+      return Scaffold(
+        body: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("Please login"),
+              AppButton(
+                title: "Login",
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginView()));
+                },
+              ),
+            ],
+          ),
         ),
       );
     }
-  }
-
-  Widget _buildProfileRow(IconData icon, String data) {
-    return Row(
-      children: [
-        Icon(icon, color: Colors.black),
-        SizedBox(width: 16.0),
-        Expanded(
-          child: TextFormField(
-            initialValue: data,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            ),
-          ),
-        ),
-        SizedBox(width: 16.0),
-        Icon(Icons.edit, color: Colors.black),
-      ],
-    );
   }
 }

@@ -160,55 +160,72 @@ class SearchProductsView extends StatelessWidget {
       }
     }
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Search Items"),
-      ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(10),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          childAspectRatio: 0.75,
+    if (products.length != 0) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("Search Items"),
         ),
-        itemCount: products.length,
-        itemBuilder: (context, index) {
-          final product = products[index];
-          return ProductCard(
-            name: product['title'] ?? 'Unknown',
-            price: product['sale_price']?.toString() ?? '0',
-            image: product['image_url'] ?? 'assets/images/default_image.png',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProductDetailScreen(
-                    inventory_id: product['id'],
-                    productId: product['product_id'],
-                    name: product['title'] ?? 'Unknown',
-                    price:
-                        product['sale_price']?.toString() ?? '0', // Handle null
-                    image: product['image_url'] ??
-                        'assets/images/default_image.png',
-                    description:
-                        product['description'] ?? 'No description available.',
-                    quatity: 1,
+        body: GridView.builder(
+          padding: const EdgeInsets.all(10),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            childAspectRatio: 0.75,
+          ),
+          itemCount: products.length,
+          itemBuilder: (context, index) {
+            final product = products[index];
+            return ProductCard(
+              name: product['title'] ?? 'Unknown',
+              price: product['has_offer']
+                  ? double.parse(product['offer_price']).toStringAsFixed(2)
+                  : double.parse(product['sale_price'] ?? "0.0")
+                      .toStringAsFixed(2),
+              image: product['image_url'] ?? 'assets/images/default_image.png',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProductDetailScreen(
+                      inventory_id: product['id'],
+                      productId: product['product_id'],
+                      name: product['title'] ?? 'Unknown',
+                      price: product['has_offer']
+                          ? double.parse(product['offer_price'])
+                              .toStringAsFixed(2)
+                          : double.parse(product['sale_price'] ?? "0.0")
+                              .toStringAsFixed(2),
+                      image: product['image_url'] ??
+                          'assets/images/default_image.png',
+                      description:
+                          product['description'] ?? 'No description available.',
+                      quatity: 1,
+                    ),
                   ),
-                ),
-              );
-            },
-            onAddToCart: () {
-              addToCart(context, product['id']);
-            },
-            onAddToFavorite: () {
-              addToWishlist(context, product['id'], product['product_id']);
-            },
-          );
-        },
-      ),
-    );
+                );
+              },
+              onAddToCart: () {
+                addToCart(context, product['id']);
+              },
+              onAddToFavorite: () {
+                addToWishlist(context, product['id'], product['product_id']);
+              },
+            );
+          },
+        ),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Search Items"),
+        ),
+        body: Center(
+          child: Text("No Item Found"),
+        ),
+      );
+    }
   }
 }

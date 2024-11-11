@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class OrderDetailView extends StatelessWidget {
   final dynamic order;
@@ -16,9 +17,28 @@ class OrderDetailView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Order ID: ${order['order_number']}',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            Row(
+              children: [
+                Text(
+                  'Order ID: #',
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Clipboard.setData(
+                        ClipboardData(text: order["id"].toString()));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Order ID copied to clipboard")),
+                    );
+                  },
+                  child: Text(
+                    order['id'].toString(),
+                    
+                    style:
+                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, decoration: TextDecoration.underline,),
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 8.0),
             Text(

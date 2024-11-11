@@ -149,15 +149,16 @@ class _CartScreenState extends State<CartScreen> {
               const Text('Please log in to view your cart'),
               const SizedBox(height: 16),
               AppButton(
-                  title: "Login",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginView()),
-                    ).then((_) {
-                      getUserCart();
-                    });
-                  })
+                title: "Login",
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginView()),
+                  ).then((_) {
+                    getUserCart();
+                  });
+                },
+              ),
             ],
           ),
         ),

@@ -389,8 +389,10 @@ class _ResultScreenState extends State<ResultScreen> {
                 final product = products[index];
                 return ProductCard(
                   name: product['title'] ?? 'Unknown', // Default value
-                  price:
-                      product['sale_price']?.toString() ?? '0', // Handle null
+                  price: product['has_offer']
+                      ? double.parse(product['offer_price']).toStringAsFixed(2)
+                      : double.parse(product['sale_price'] ?? "0.0")
+                          .toStringAsFixed(2),
                   image: product['image_url'] ??
                       'assets/images/default_image.png', // Default image
                   onTap: () {
@@ -401,8 +403,11 @@ class _ResultScreenState extends State<ResultScreen> {
                           inventory_id: product['id'],
                           productId: product['product_id'],
                           name: product['title'] ?? 'Unknown',
-                          price: product['purchase_price']?.toString() ??
-                              '0', // Handle null
+                          price: product['has_offer']
+                              ? double.parse(product['offer_price'])
+                                  .toStringAsFixed(2)
+                              : double.parse(product['sale_price'] ?? "0.0")
+                                  .toStringAsFixed(2),
                           image: product['image_url'] ??
                               'assets/images/default_image.png',
                           description: product['description'] ??

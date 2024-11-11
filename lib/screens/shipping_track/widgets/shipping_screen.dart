@@ -1,16 +1,71 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
+import 'package:yoo_local/app_constant/app_constants.dart';
 import 'package:yoo_local/screens/shipping_track/widgets/tracking_details.dart';
+import 'package:yoo_local/ui_fuctionality/local_data.dart';
 import 'package:yoo_local/widgets/app_button.dart';
 
+// ignore: must_be_immutable
 class OrderTrackingScreen extends StatelessWidget {
+  final dio = Dio();
+  final TextEditingController orderId = TextEditingController();
+  Map<String, dynamic> userTrackingResponse = {};
+
+  OrderTrackingScreen({super.key});
+
+  Future<void> getUserTrackingDetails(BuildContext context, String id) async {
+    var userToken = await LocalData.getString(AppConstants.userToken);
+    final url = "${AppConstants.baseUrl}/order/tracking/$id";
+
+    try {
+      Response response = await dio.post(
+        url,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $userToken',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        userTrackingResponse = response.data['data']['values'];
+      } else {
+        _showErrorSnackBar(context, 'Failed to fetch tracking details');
+      }
+    } catch (e) {
+      _showErrorSnackBar(context, 'Something went wrong. Please try again');
+    }
+  }
+
+  void _showErrorSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: AppColors.primaryColor,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('Top Order Tracking'),
+        title: const Text('Order Tracking'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -36,6 +91,7 @@ class OrderTrackingScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: TextField(
+                        controller: orderId,
                         decoration: InputDecoration(
                           hintText: 'Enter Number',
                           border: OutlineInputBorder(
@@ -46,13 +102,21 @@ class OrderTrackingScreen extends StatelessWidget {
                     ),
                     SizedBox(width: 8.0),
                     AppButton(
-                        title: "Search",
-                        onTap: () {
+                      title: "Search",
+                      onTap: () async {
+                        await getUserTrackingDetails(context, orderId.text);
+                        if (userTrackingResponse.isNotEmpty) {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => OrderTrackingView()));
-                        })
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TrackingScreen(
+                                userTrackingDetails: userTrackingResponse,
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
                   ],
                 ),
                 SizedBox(height: 32.0),
@@ -99,7 +163,9 @@ class OrderTrackingScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(
-                      5, (index) => Icon(Icons.star, color: Colors.orange)),
+                    5,
+                    (index) => Icon(Icons.star, color: Colors.orange),
+                  ),
                 ),
                 SizedBox(height: 8.0),
                 Text(
