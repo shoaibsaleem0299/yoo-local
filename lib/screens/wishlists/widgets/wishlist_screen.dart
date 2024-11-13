@@ -26,7 +26,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
 
   Future<void> getUserWishlist() async {
     var userToken = await LocalData.getString(AppConstants.userToken);
-    if (userToken!.isNotEmpty) {
+    if (userToken != null && userToken!.isNotEmpty) {
       setState(() {
         isLoggedIn = true;
       });
@@ -249,7 +249,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                               inventory['title'] ?? "item",
                                             ),
                                             Text(
-                                                '£${inventory['sale_price'] ?? "0.0"}',
+                                                '£${inventory['has_offer'] ? double.parse(inventory['offer_price']).toStringAsFixed(2) : double.parse(inventory['sale_price'] ?? "0.0").toStringAsFixed(2)}',
                                                 style: const TextStyle(
                                                     color: Colors.green)),
                                           ],
@@ -312,15 +312,32 @@ class _WishlistScreenState extends State<WishlistScreen> {
                         ],
                       ),
                     )
-                  : const Center(
-                      child: Text(
-                        'Wishlist is empty',
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Wishlist is empty'),
+                          const SizedBox(
+                              height: 20), // Space between text and button
+                          AppButton(
+                              title: "Explore to Shop",
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CategoryView()));
+                              })
+                        ],
                       ),
                     )
               : Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      const Text(
+                        'No wishlist found',
+                      ),
+                      const SizedBox(height: 10),
                       const Text(
                         'Please log in to view your wishlist',
                       ),

@@ -193,10 +193,13 @@ class _CreateAccountViewState extends State<CreateAccountView> {
                       style: TextStyle(color: AppColors.secondaryColor),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          if (value!.length <= 8) {
-                            return 'Password must be 8 character long';
-                          }
                           return 'Please enter your Password';
+                        }
+                        if (value.length < 8) {
+                          return 'Password must be at least 8 characters long';
+                        }
+                        if (value != confirmPasswordController.text) {
+                          return 'Passwords do not match';
                         }
                         return null;
                       },
@@ -221,7 +224,10 @@ class _CreateAccountViewState extends State<CreateAccountView> {
                       style: TextStyle(color: AppColors.secondaryColor),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your Password';
+                          return 'Please confirm your Password';
+                        }
+                        if (value != passwordController.text) {
+                          return 'Passwords do not match';
                         }
                         return null;
                       },

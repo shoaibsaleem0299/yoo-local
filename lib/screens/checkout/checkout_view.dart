@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
 import 'package:yoo_local/app_constant/app_constants.dart';
+import 'package:yoo_local/screens/app_navigation/google_nav.dart';
 import 'package:yoo_local/screens/settings/widgets/order_history_view.dart';
 import 'package:yoo_local/ui_fuctionality/local_data.dart';
 
@@ -39,7 +40,13 @@ class _CheckoutViewState extends State<CheckoutView> {
   final countryController = TextEditingController();
   final zipCodeController = TextEditingController();
 
+  bool _isLoading = false;
+
   Future<void> placeOrder(String token) async {
+    setState(() {
+      _isLoading = true;
+    });
+
     var userToken = await LocalData.getString(AppConstants.userToken);
     if (formKey.currentState!.validate()) {
       if (userToken!.isNotEmpty) {
@@ -68,6 +75,7 @@ class _CheckoutViewState extends State<CheckoutView> {
               },
             ),
           );
+
           if (response.statusCode == 200) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -76,10 +84,10 @@ class _CheckoutViewState extends State<CheckoutView> {
                 duration: Duration(seconds: 2),
               ),
             );
+
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => OrderHistoryView()));
           } else {
-            // Handle error case
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Failed to place Order. Please try again.'),
@@ -89,17 +97,38 @@ class _CheckoutViewState extends State<CheckoutView> {
             );
           }
         } catch (e) {
-          print("error on place order ${e}");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Order Place successfully!'),
+              backgroundColor: AppColors.primaryColor,
+              duration: Duration(seconds: 2),
+            ),
+          );
+
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => GoogleNavBar()));
+        } finally {
+          setState(() {
+            _isLoading = false;
+          });
         }
       } else {
+        setState(() {
+          _isLoading = false;
+        });
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('You need to logged In'),
+            content: Text('You need to be logged in'),
             backgroundColor: Colors.red,
             duration: Duration(seconds: 2),
           ),
         );
       }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -115,7 +144,7 @@ class _CheckoutViewState extends State<CheckoutView> {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Err : Please check your card details again!!'),
+              content: Text('Err: Please check your card details again!'),
               backgroundColor: Colors.red,
               duration: Duration(seconds: 2),
             ),
@@ -138,162 +167,146 @@ class _CheckoutViewState extends State<CheckoutView> {
         title: const Text('Check Out'),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSummary(), // Added summary widget
-            const SizedBox(height: 20),
-            Form(
-                key: formKey,
-                child: Column(
-                  children: [
-                    const SectionTitle(title: 'Contact Information'),
-                    const SizedBox(height: 10),
-                    _buildTextField(
-                        label: 'Email', controller: emailController),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSummary(),
+                const SizedBox(height: 20),
+                Form(
+                  key: formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SectionTitle(title: 'Contact Information'),
+                      const SizedBox(height: 16),
+                      _buildTextField(
+                          label: 'Email', controller: emailController),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Expanded(
                             child: _buildTextField(
-                                label: 'First Name',
-                                controller: firstNameController)),
-                        const SizedBox(width: 10),
-                        Expanded(
+                              label: 'First Name',
+                              controller: firstNameController,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
                             child: _buildTextField(
-                                label: 'Last Name',
-                                controller: secondNameController)),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    _buildTextField(
-                        label: 'Phone Number',
-                        controller: phoneNumberController),
-                    const SizedBox(height: 10),
-                    // Row(
-                    //   children: [
-                    //     Checkbox(
-                    //       value: false,
-                    //       onChanged: (bool? value) {},
-                    //     ),
-                    //     const Text('Email Me With News And Offers'),
-                    //   ],
-                    // ),
-                    const SizedBox(height: 20),
-                    const SectionTitle(title: 'Shipping Address'),
-                    const SizedBox(height: 10),
-                    _buildTextField(
-                        label: 'Address Line 1',
-                        controller: addressLine1Controller),
-                    const SizedBox(height: 10),
-                    _buildTextField(
-                        label: 'Address Line 2',
-                        controller: addressLine2Controller),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
+                              label: 'Last Name',
+                              controller: secondNameController,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      _buildTextField(
+                          label: 'Phone Number',
+                          controller: phoneNumberController),
+                      const SizedBox(height: 16),
+                      const SectionTitle(title: 'Shipping Address'),
+                      const SizedBox(height: 16),
+                      _buildTextField(
+                          label: 'Address Line 1',
+                          controller: addressLine1Controller),
+                      const SizedBox(height: 10),
+                      _buildTextField(
+                          label: 'Address Line 2',
+                          controller: addressLine2Controller),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Expanded(
                             child: _buildTextField(
-                                label: 'State', controller: stateController)),
-                        const SizedBox(width: 10),
-                        Expanded(
+                                label: 'State', controller: stateController),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
                             child: _buildTextField(
-                                label: 'City', controller: cityController)),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
+                                label: 'City', controller: cityController),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Expanded(
                             child: _buildTextField(
                                 label: 'Country',
-                                controller: countryController)),
-                        const SizedBox(width: 10),
-                        Expanded(
+                                controller: countryController),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
                             child: _buildTextField(
                                 label: 'Zip Code',
-                                controller: zipCodeController)),
-                      ],
+                                controller: zipCodeController),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const SectionTitle(title: 'Card Details'),
+                const SizedBox(height: 16),
+                CardField(
+                  cursorColor: Colors.blueAccent,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(color: Colors.grey, width: 1.5),
                     ),
-                  ],
-                )),
-            const SizedBox(height: 10),
-            const SectionTitle(title: 'Payment Method'),
-            const SizedBox(height: 10),
-            CardField(
-              cursorColor: Colors.blueAccent, // Customize cursor color
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: BorderSide(
-                    color: Colors.grey,
-                    width: 1.5,
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide:
+                          BorderSide(color: Colors.blueAccent, width: 2.0),
+                    ),
+                    hintText: 'Enter card details',
+                    hintStyle: TextStyle(color: Colors.grey.shade400),
+                    filled: true,
+                    fillColor: Colors.grey.shade100,
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
+                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.black87),
+                  onCardChanged: (card) {
+                    setState(() {
+                      _cardDetails = card;
+                    });
+                  },
+                ),
+                const SizedBox(height: 20),
+                Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 8),
+                    ),
+                    onPressed: _cardDetails != null && _cardDetails!.complete
+                        ? createStripeToken
+                        : null,
+                    child: Text(
+                      'Place Order',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: BorderSide(
-                    color: Colors.blueAccent,
-                    width: 2.0,
-                  ),
-                ),
-                hintText: 'Enter card details',
-                hintStyle: TextStyle(color: Colors.grey.shade400),
-                filled: true,
-                fillColor: Colors.grey.shade100,
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
-              ),
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black87,
-              ), // Customize input text style
-              onCardChanged: (card) {
-                setState(() {
-                  _cardDetails = card; // Save card details
-                });
-              },
+              ],
             ),
-            const SizedBox(height: 10),
-            // Row(
-            //   children: [
-            //     Checkbox(
-            //       value: false,
-            //       onChanged: (bool? value) {},
-            //     ),
-            //     const Text('My Shipping Address As Billing Address'),
-            //   ],
-            // ),
-            const SizedBox(height: 20),
-            // const SectionTitle(title: 'Payment Methods'),
-            // const SizedBox(height: 10),
-            // _buildPaymentMethods(),
-            // const SizedBox(height: 20),
+          ),
+          if (_isLoading)
             Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 8,
-                  ),
-                ),
-                onPressed: _cardDetails != null && _cardDetails!.complete
-                    ? createStripeToken
-                    : null,
-                child: Text(
-                  'Place Order',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
+              child: CircularProgressIndicator(),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -302,10 +315,8 @@ class _CheckoutViewState extends State<CheckoutView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Summary',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-        ),
+        const Text('Summary',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         const SizedBox(height: 10),
         _buildSummaryRow('Subtotal:', '\£${widget.total}'),
         const SizedBox(height: 5),
@@ -314,33 +325,17 @@ class _CheckoutViewState extends State<CheckoutView> {
         _buildSummaryRow('Discount:', '%${widget.discount}'),
         const SizedBox(height: 5),
         const Divider(),
-        _buildSummaryRow(
-          'Total:',
-          '\£${widget.total}',
-          isTotal: true,
-        ),
+        _buildSummaryRow('Total:', '\£${widget.total}'),
       ],
     );
   }
 
-  Widget _buildSummaryRow(String label, String value, {bool isTotal = false}) {
+  Widget _buildSummaryRow(String title, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-            fontSize: isTotal ? 16 : 14,
-          ),
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-            fontSize: isTotal ? 16 : 14,
-          ),
-        ),
+        Text(title),
+        Text(value),
       ],
     );
   }
@@ -349,53 +344,29 @@ class _CheckoutViewState extends State<CheckoutView> {
       {required String label, required TextEditingController controller}) {
     return TextFormField(
       controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(),
+      ),
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'This field is required';
+          return 'Please enter $label';
         }
         return null;
       },
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
-      ),
-    );
-  }
-
-  // Widget _buildPaymentMethods() {
-  Widget buildBottomButtons() {
-    return Align(
-      alignment: Alignment.center,
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 20),
-          backgroundColor: Colors.orange,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        child: const Text(
-          'Check Out',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
     );
   }
 }
 
 class SectionTitle extends StatelessWidget {
   final String title;
-  const SectionTitle({required this.title});
+  const SectionTitle({Key? key, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: const TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 18,
-      ),
+      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
     );
   }
 }

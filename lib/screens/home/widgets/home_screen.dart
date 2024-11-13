@@ -124,16 +124,16 @@ class _HomeScreenState extends State<HomeScreen> {
               SectionHeader(
                 heading: "Top Selling Products",
                 imageURL:
-                    "https://cdn-icons-png.flaticon.com/512/771/771222.png",
-              ),
-              FeaturedProduct(),
-              SizedBox(height: 12),
-              SectionHeader(
-                heading: "Best Selling Products",
-                imageURL:
                     "https://cdn-icons-png.freepik.com/512/8465/8465733.png",
               ),
               FeaturedProduct(),
+              // SizedBox(height: 12),
+              // SectionHeader(
+              //   heading: "Best Selling Products",
+              //   imageURL:
+              //       "https://cdn-icons-png.freepik.com/512/8465/8465733.png",
+              // ),
+              // FeaturedProduct(),
               SizedBox(height: 6),
               SingleImageWidget()
             ],

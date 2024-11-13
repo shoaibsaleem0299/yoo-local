@@ -119,39 +119,71 @@ class CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: color,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                name,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      elevation: 8,
+      shadowColor: Colors.black.withOpacity(0.15),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFf5f7fa), Color(0xFFc3cfe2)], // Subtle gradient
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
+          child: Column(
+            mainAxisSize:
+                MainAxisSize.min, // Set to min to fit content flexibly
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Container(
+                  width: 90,
+                  height: 90,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        spreadRadius: 2,
+                        blurRadius: 10,
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.all(8.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          Icons.broken_image,
+                          color: Colors.grey[400],
+                          size: 40,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                name.length > 10 ? '${name.substring(0, 7)}...' : name,
                 style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: Color(0xFF333333), // Darker text for better contrast
                 ),
+                textAlign: TextAlign.center,
               ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 42),
-                child: Image.network(
-                  imageUrl,
-                  width: 70,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(Icons.broken_image,
-                        color: Colors.grey, size: 50);
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -368,65 +400,77 @@ class _ResultScreenState extends State<ResultScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(widget.name),
-      ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : GridView.builder(
-              padding: const EdgeInsets.all(10),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 0.75,
-              ),
-              itemCount: products.length,
-              itemBuilder: (context, index) {
-                final product = products[index];
-                return ProductCard(
-                  name: product['title'] ?? 'Unknown', // Default value
-                  price: product['has_offer']
-                      ? double.parse(product['offer_price']).toStringAsFixed(2)
-                      : double.parse(product['sale_price'] ?? "0.0")
-                          .toStringAsFixed(2),
-                  image: product['image_url'] ??
-                      'assets/images/default_image.png', // Default image
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductDetailScreen(
-                          inventory_id: product['id'],
-                          productId: product['product_id'],
-                          name: product['title'] ?? 'Unknown',
-                          price: product['has_offer']
-                              ? double.parse(product['offer_price'])
-                                  .toStringAsFixed(2)
-                              : double.parse(product['sale_price'] ?? "0.0")
-                                  .toStringAsFixed(2),
-                          image: product['image_url'] ??
-                              'assets/images/default_image.png',
-                          description: product['description'] ??
-                              'No description available.',
-                          quatity: 1,
+    if (products.isNotEmpty) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(widget.name),
+        ),
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : GridView.builder(
+                padding: const EdgeInsets.all(10),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 0.75,
+                ),
+                itemCount: products.length,
+                itemBuilder: (context, index) {
+                  final product = products[index];
+                  return ProductCard(
+                    name: product['title'] ?? 'Unknown', // Default value
+                    price: product['has_offer']
+                        ? double.parse(product['offer_price'])
+                            .toStringAsFixed(2)
+                        : double.parse(product['sale_price'] ?? "0.0")
+                            .toStringAsFixed(2),
+                    image: product['image_url'] ??
+                        'assets/images/default_image.png', // Default image
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductDetailScreen(
+                            inventory_id: product['id'],
+                            productId: product['product_id'],
+                            name: product['title'] ?? 'Unknown',
+                            price: product['has_offer']
+                                ? double.parse(product['offer_price'])
+                                    .toStringAsFixed(2)
+                                : double.parse(product['sale_price'] ?? "0.0")
+                                    .toStringAsFixed(2),
+                            image: product['images_urls'] ?? [],
+                            description: product['description'] ??
+                                'No description available.',
+                            quatity: 1,
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  onAddToCart: () {
-                    addToCart(context, product['id'].toString());
-                  },
-                  onAddToFavorite: () {
-                    addToWishlist(context, product['product_id'].toString(),
-                        product['id'].toString());
-                  },
-                );
-              },
-            ),
-    );
+                      );
+                    },
+                    onAddToCart: () {
+                      addToCart(context, product['id'].toString());
+                    },
+                    onAddToFavorite: () {
+                      addToWishlist(context, product['product_id'].toString(),
+                          product['id'].toString());
+                    },
+                  );
+                },
+              ),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Category Items"),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Text("No Item Found"),
+        ),
+      );
+    }
   }
 }

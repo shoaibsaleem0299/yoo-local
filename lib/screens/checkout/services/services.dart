@@ -1,93 +1,93 @@
-import 'package:dio/dio.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:yoo_local/app_constant/app_constants.dart';
+// import 'package:dio/dio.dart';
+// import 'package:flutter_stripe/flutter_stripe.dart';
+// import 'package:yoo_local/app_constant/app_constants.dart';
 
-class StripeService {
-  StripeService._();
+// class StripeService {
+//   StripeService._();
 
-  static final StripeService instance = StripeService._();
+//   static final StripeService instance = StripeService._();
 
-  Future<void> makePayment(String amount) async {
-    try {
-      String? paymentIntentClientSecret =
-          await createPaymentIntent(amount, 'usd');
-      if (paymentIntentClientSecret == null) return;
-      await Stripe.instance.initPaymentSheet(
-        paymentSheetParameters: SetupPaymentSheetParameters(
-            paymentIntentClientSecret: paymentIntentClientSecret,
-            merchantDisplayName: 'YooLocal'),
-      );
-      await _processPayment();
-    } catch (e) {
-      print(e);
-    }
-  }
+//   Future<void> makePayment(String amount) async {
+//     try {
+//       String? paymentIntentClientSecret =
+//           await createPaymentIntent(amount, 'usd');
+//       if (paymentIntentClientSecret == null) return;
+//       await Stripe.instance.initPaymentSheet(
+//         paymentSheetParameters: SetupPaymentSheetParameters(
+//             paymentIntentClientSecret: paymentIntentClientSecret,
+//             merchantDisplayName: 'YooLocal'),
+//       );
+//       await _processPayment();
+//     } catch (e) {
+//       print(e);
+//     }
+//   }
 
-  Future<String?> createPaymentIntent(String amount, String currency) async {
-    try {
-      Map<String, dynamic> body = {
-        'amount': _calculateAmount(amount),
-        'currency': currency,
-      };
-      Dio dio = Dio();
-      var response = await dio.post(
-        'https://api.stripe.com/v1/payment_intents',
-        options: Options(headers: {
-          'Authorization': 'Bearer ${AppConstants.stripeSecret}',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        }),
-        data: body,
-      );
-      if (response.data != null) {
-        return response.data['client_secret'];
-      }
-    } catch (e) {
-      print(e);
-    }
-    return null;
-  }
+//   Future<String?> createPaymentIntent(String amount, String currency) async {
+//     try {
+//       Map<String, dynamic> body = {
+//         'amount': _calculateAmount(amount),
+//         'currency': currency,
+//       };
+//       Dio dio = Dio();
+//       var response = await dio.post(
+//         'https://api.stripe.com/v1/payment_intents',
+//         options: Options(headers: {
+//           'Authorization': 'Bearer ${AppConstants.stripeSecret}',
+//           'Content-Type': 'application/x-www-form-urlencoded',
+//         }),
+//         data: body,
+//       );
+//       if (response.data != null) {
+//         return response.data['client_secret'];
+//       }
+//     } catch (e) {
+//       print(e);
+//     }
+//     return null;
+//   }
 
-  Future<void> _processPayment() async {
-    try {
-      await Stripe.instance.presentPaymentSheet();
-      await Stripe.instance.confirmPaymentSheetPayment();
-    } catch (e) {
-      print(e);
-    }
-  }
+//   Future<void> _processPayment() async {
+//     try {
+//       await Stripe.instance.presentPaymentSheet();
+//       await Stripe.instance.confirmPaymentSheetPayment();
+//     } catch (e) {
+//       print(e);
+//     }
+//   }
 
-  String _calculateAmount(String amount) {
-    final cleanAmount = amount.replaceAll(',', '');
-    final calculatedAmount = (double.parse(cleanAmount) * 100).toInt();
-    return calculatedAmount.toString();
-  }
+//   String _calculateAmount(String amount) {
+//     final cleanAmount = amount.replaceAll(',', '');
+//     final calculatedAmount = (double.parse(cleanAmount) * 100).toInt();
+//     return calculatedAmount.toString();
+//   }
 
-  Future<void> createStripeToken() async {
-    try {
-      // Validate if card details are entered correctly
-      final card = CardFieldInputDetails(
-        complete: true,
-      );
+//   Future<void> createStripeToken() async {
+//     try {
+//       // Validate if card details are entered correctly
+//       final card = CardFieldInputDetails(
+//         complete: true,
+//       );
 
-      if (card.complete) {
-        // Create token
-        final tokenData = await Stripe.instance.createToken(
-          // ignore: deprecated_member_use
-          CreateTokenParams(type: TokenType.Card),
-        );
+//       if (card.complete) {
+//         // Create token
+//         final tokenData = await Stripe.instance.createToken(
+//           // ignore: deprecated_member_use
+//           CreateTokenParams(type: TokenType.Card),
+//         );
 
-        // Extract token ID
-        final token = tokenData.id;
-        print("stripe token is: ${token}");
-        // Send `token` to your Laravel backend
-      } else {
-        print('Card details are incomplete');
-      }
-    } catch (e) {
-      print('Error creating token: $e');
-    }
-  }
-}
+//         // Extract token ID
+//         final token = tokenData.id;
+//         print("stripe token is: ${token}");
+//         // Send `token` to your Laravel backend
+//       } else {
+//         print('Card details are incomplete');
+//       }
+//     } catch (e) {
+//       print('Error creating token: $e');
+//     }
+//   }
+// }
 
 
 

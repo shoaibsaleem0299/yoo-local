@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
 import 'package:yoo_local/app_constant/app_constants.dart';
+import 'package:yoo_local/screens/category/category_view.dart';
 import 'package:yoo_local/screens/checkout/checkout_view.dart';
 import 'package:yoo_local/screens/login/login_view.dart';
 import 'package:yoo_local/ui_fuctionality/local_data.dart';
@@ -27,7 +28,7 @@ class _CartScreenState extends State<CartScreen> {
 
   Future<void> getUserCart() async {
     var userToken = await LocalData.getString(AppConstants.userToken);
-    if (userToken!.isNotEmpty) {
+    if (userToken != null && userToken!.isNotEmpty) {
       isLoggedIn = true; // User is logged in
       try {
         String url = "${AppConstants.baseUrl}/cart/cart_by_user";
@@ -130,10 +131,12 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
+      getUserCart();
       return Center(child: CircularProgressIndicator());
     }
 
     if (!isLoggedIn) {
+      getUserCart();
       // If user is not logged in
       return Scaffold(
         backgroundColor: Colors.white,
@@ -146,6 +149,8 @@ class _CartScreenState extends State<CartScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const Text('No cart found'),
+              const SizedBox(height: 10),
               const Text('Please log in to view your cart'),
               const SizedBox(height: 16),
               AppButton(
@@ -166,7 +171,7 @@ class _CartScreenState extends State<CartScreen> {
     }
 
     // If user is logged in and cart items are empty
-    if (userCartItems.isEmpty) {
+    if (userCartItems.isEmpty && userCartData.isEmpty) {
       return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -175,7 +180,21 @@ class _CartScreenState extends State<CartScreen> {
           centerTitle: true,
         ),
         body: Center(
-          child: const Text('Cart is empty'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Cart is empty'),
+              const SizedBox(height: 20), // Space between text and button
+              AppButton(
+                  title: "Explore to Shop",
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CategoryView()));
+                  })
+            ],
+          ),
         ),
       );
     }
@@ -262,7 +281,7 @@ class _CartScreenState extends State<CartScreen> {
                                       ),
                                     ),
                                     Text(
-                                      ' x ${product['quantity'] ?? '1'}',
+                                      '(${product['quantity'] ?? '1'})',
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,

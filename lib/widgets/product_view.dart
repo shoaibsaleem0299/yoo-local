@@ -4,13 +4,15 @@ import 'package:yoo_local/app_constant/app_colors.dart';
 import 'package:yoo_local/app_constant/app_constants.dart';
 import 'package:yoo_local/screens/home/widgets/featured_product.dart';
 import 'package:yoo_local/screens/home/widgets/section_header.dart';
+
 import 'package:yoo_local/screens/login/login_view.dart';
 import 'package:yoo_local/ui_fuctionality/local_data.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final String name;
   final String price;
-  final String image;
+  final List image;
   final String description;
   final int quatity;
   final int productId;
@@ -181,143 +183,157 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       appBar: AppBar(
         title: Text(widget.name),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Divider(color: AppColors.primaryColor),
-            ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Image.network(
-                    widget.image,
-                    height: 120,
-                    width: 120,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Icon(
-                        Icons.broken_image,
-                        size: 40,
-                        color: Colors.grey,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CarouselSlider(
+                options: CarouselOptions(
+                  height: 200,
+                  enableInfiniteScroll: false,
+                  enlargeCenterPage: true,
+                ),
+                items: widget.image.map((imageUrl) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(
+                            Icons.broken_image,
+                            size: 40,
+                            color: Colors.grey,
+                          );
+                        },
                       );
                     },
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Divider(color: AppColors.primaryColor),
+              ),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.name,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(widget.price,
+                              style: const TextStyle(
+                                  fontSize: 18, color: Colors.orange)),
+                          const SizedBox(height: 8),
+                          Text(
+                            widget.description,
+                            style: const TextStyle(fontSize: 16),
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Row(
                       children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.remove_circle,
+                            color: AppColors.primaryColor,
+                            size: 26,
+                          ),
+                          onPressed: () {
+                            if (quantity > 0) {
+                              setState(() {
+                                quantity--;
+                              });
+                            }
+                          },
+                        ),
                         Text(
-                          widget.name,
+                          quantity.toString(),
                           style: const TextStyle(
-                            fontSize: 22,
                             fontWeight: FontWeight.bold,
+                            fontSize: 16,
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        Text(widget.price,
-                            style: const TextStyle(
-                                fontSize: 18, color: Colors.orange)),
-                        const SizedBox(height: 8),
-                        Text(
-                          widget.description,
-                          style: const TextStyle(fontSize: 16),
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
+                        IconButton(
+                          icon: Icon(
+                            Icons.add_circle,
+                            color: AppColors.primaryColor,
+                            size: 26,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              quantity++;
+                            });
+                          },
                         ),
                       ],
                     ),
-                  ),
-                ],
+                    ElevatedButton(
+                      onPressed: () => addToCart(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: const Text(
+                        "Add To Cart",
+                        style: TextStyle(fontSize: 12, color: Colors.white),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => addToWishlist(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: const Text(
+                        "Add Wishlist",
+                        style: TextStyle(fontSize: 12, color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            // Quantity and Buttons
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.remove_circle,
-                          color: AppColors.primaryColor,
-                          size: 26,
-                        ),
-                        onPressed: () {
-                          if (quantity > 0) {
-                            setState(() {
-                              quantity--;
-                            });
-                          }
-                        },
-                      ),
-                      Text(
-                        quantity.toString(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.add_circle,
-                          color: AppColors.primaryColor,
-                          size: 26,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            quantity++;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  ElevatedButton(
-                    onPressed: () => addToCart(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    child: const Text(
-                      "Add To Cart",
-                      style: TextStyle(fontSize: 12, color: Colors.white),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => addToWishlist(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    child: const Text(
-                      "Add Wishlist",
-                      style: TextStyle(fontSize: 12, color: Colors.white),
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 22),
+              SectionHeader(
+                heading: "Similar",
+                imageURL:
+                    "https://cdn4.iconfinder.com/data/icons/flat-color-sale-tag-set/512/Accounts_label_promotion_sale_tag_3-512.png",
               ),
-            ),
-            const SizedBox(height: 22),
-            SectionHeader(
-              heading: "Similar",
-              imageURL:
-                  "https://cdn4.iconfinder.com/data/icons/flat-color-sale-tag-set/512/Accounts_label_promotion_sale_tag_3-512.png",
-            ),
-            FeaturedProduct(),
-          ],
+              FeaturedProduct(),
+            ],
+          ),
         ),
       ),
     );

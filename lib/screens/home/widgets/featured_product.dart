@@ -67,6 +67,7 @@ class _FeaturedProductState extends State<FeaturedProduct> {
             SnackBar(
               content: Text('Item added to cart successfully'),
               backgroundColor: AppColors.primaryColor,
+              duration: Duration(seconds: 2),
             ),
           );
         } else {
@@ -126,7 +127,7 @@ class _FeaturedProductState extends State<FeaturedProduct> {
                                 .toStringAsFixed(2)
                             : double.parse(product['sale_price'] ?? "0.0")
                                 .toStringAsFixed(2),
-                        image: product['image_url'] ?? "unkown",
+                        image: product['images_urls'] ?? [],
                         description: product['description'] ?? "No Description",
                         quatity: 1,
                         productId: product['product_id'],

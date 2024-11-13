@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
 import 'package:yoo_local/app_constant/app_constants.dart';
 import 'package:yoo_local/screens/shipping_track/widgets/tracking_details.dart';
-import 'package:yoo_local/ui_fuctionality/local_data.dart';
 import 'package:yoo_local/widgets/app_button.dart';
 
 // ignore: must_be_immutable
@@ -15,17 +14,11 @@ class OrderTrackingScreen extends StatelessWidget {
   OrderTrackingScreen({super.key});
 
   Future<void> getUserTrackingDetails(BuildContext context, String id) async {
-    var userToken = await LocalData.getString(AppConstants.userToken);
     final url = "${AppConstants.baseUrl}/order/tracking/$id";
 
     try {
       Response response = await dio.post(
         url,
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $userToken',
-          },
-        ),
       );
 
       if (response.statusCode == 200) {
@@ -34,7 +27,7 @@ class OrderTrackingScreen extends StatelessWidget {
         _showErrorSnackBar(context, 'Failed to fetch tracking details');
       }
     } catch (e) {
-      _showErrorSnackBar(context, 'Something went wrong. Please try again');
+      _showErrorSnackBar(context, 'Order with this ID does not exist');
     }
   }
 
@@ -93,7 +86,7 @@ class OrderTrackingScreen extends StatelessWidget {
                       child: TextField(
                         controller: orderId,
                         decoration: InputDecoration(
-                          hintText: 'Enter Number',
+                          hintText: 'Enter Order ID',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),

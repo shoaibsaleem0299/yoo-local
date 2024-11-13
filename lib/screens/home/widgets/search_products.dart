@@ -198,8 +198,7 @@ class SearchProductsView extends StatelessWidget {
                               .toStringAsFixed(2)
                           : double.parse(product['sale_price'] ?? "0.0")
                               .toStringAsFixed(2),
-                      image: product['image_url'] ??
-                          'assets/images/default_image.png',
+                      image: product['images_urls'] ?? [],
                       description:
                           product['description'] ?? 'No description available.',
                       quatity: 1,
@@ -221,6 +220,7 @@ class SearchProductsView extends StatelessWidget {
       return Scaffold(
         appBar: AppBar(
           title: Text("Search Items"),
+          centerTitle: true,
         ),
         body: Center(
           child: Text("No Item Found"),

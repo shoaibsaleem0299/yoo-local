@@ -27,7 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       userToken = Token;
       username = name;
       userEmail = Email;
-      isLoading = false; // Data loading completed
+      isLoading = false;
     });
   }
 
@@ -47,7 +47,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      // Show loading indicator while loading data
       return Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -55,7 +54,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
 
-    if (userToken!.isNotEmpty) {
+    if (userToken != null && userToken!.isNotEmpty) {
       return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -77,7 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  username ?? '',
+                  username ?? 'userName',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -85,7 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 SizedBox(height: 6.0),
                 Text(
-                  userEmail ?? '',
+                  userEmail ?? 'userEmail@gmail.com',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -117,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       Text(
-                        'Order Tracking',
+                        'Order History',
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.bold),
                       ),
@@ -227,6 +226,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       );
     } else {
+      getUserData();
       return Scaffold(
         body: Center(
           child: Column(
