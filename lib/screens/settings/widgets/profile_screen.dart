@@ -6,7 +6,6 @@ import 'package:yoo_local/screens/login/login_view.dart';
 import 'package:yoo_local/screens/settings/widgets/order_history_view.dart';
 import 'package:yoo_local/screens/shipping_track/widgets/shipping_screen.dart';
 import 'package:yoo_local/ui_fuctionality/local_data.dart';
-import 'package:yoo_local/widgets/app_button.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -76,9 +75,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  username ?? 'userName',
+                  username ?? 'Username',
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 26,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -87,10 +86,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   userEmail ?? 'userEmail@gmail.com',
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(height: 32.0),
+                SizedBox(height: 24.0),
+                Divider(color: AppColors.primaryColor.withOpacity(0.5)),
+                SizedBox(height: 24.0),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -228,18 +229,91 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } else {
       getUserData();
       return Scaffold(
-        body: Center(
+        appBar: AppBar(
+          title: Text("Profile", style: TextStyle(letterSpacing: 1.2)),
+          centerTitle: true,
+          elevation: 0,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text("Please login"),
-              AppButton(
-                title: "Login",
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => LoginView()));
-                },
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 16.0),
+                    CircleAvatar(
+                      radius: 60,
+                      backgroundImage: NetworkImage(profileData['imageUrl']!),
+                    ),
+                    SizedBox(height: 16.0),
+                    Text(
+                      username ?? 'Username',
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 6.0),
+                    Text(
+                      userEmail ?? 'userEmail@gmail.com',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 24.0),
+                    Divider(color: AppColors.primaryColor.withOpacity(0.5)),
+                    SizedBox(height: 24.0),
+                    Icon(
+                      Icons.info_outline,
+                      color: Colors.red,
+                      size: 50,
+                    ),
+                    SizedBox(height: 16.0),
+                    Text(
+                      "Please login to access full features",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginView()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryColor,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  icon: const Icon(
+                    Icons.login,
+                    color: Colors.white,
+                  ),
+                  label: const Text(
+                    'Log In',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

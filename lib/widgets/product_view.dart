@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
 import 'package:yoo_local/app_constant/app_constants.dart';
-import 'package:yoo_local/screens/home/widgets/featured_product.dart';
 import 'package:yoo_local/screens/home/widgets/section_header.dart';
+import 'package:yoo_local/screens/home/widgets/similer_deals.dart';
 
 import 'package:yoo_local/screens/login/login_view.dart';
 import 'package:yoo_local/ui_fuctionality/local_data.dart';
@@ -180,9 +180,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.name),
-      ),
+      appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: SingleChildScrollView(
@@ -191,24 +189,61 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             children: [
               CarouselSlider(
                 options: CarouselOptions(
-                  height: 200,
+                  height: 220,
                   enableInfiniteScroll: false,
                   enlargeCenterPage: true,
+                  viewportFraction:
+                      0.9, // Makes images slightly smaller for spacing effect
+                  aspectRatio: 16 / 9,
+                  autoPlay: true,
+                  autoPlayInterval: Duration(seconds: 3),
                 ),
                 items: widget.image.map((imageUrl) {
                   return Builder(
                     builder: (BuildContext context) {
-                      return Image.network(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(
-                            Icons.broken_image,
-                            size: 40,
-                            color: Colors.grey,
-                          );
-                        },
+                      return Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                              color: AppColors.primaryColor, width: 1.5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.15),
+                              blurRadius: 8,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
+                                color: AppColors.primaryColor,
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.grey.shade200,
+                              child: const Icon(
+                                Icons.broken_image,
+                                size: 60,
+                                color: Colors.grey,
+                              ),
+                            );
+                          },
+                        ),
                       );
                     },
                   );
@@ -296,31 +331,34 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                       ],
                     ),
-                    ElevatedButton(
-                      onPressed: () => addToCart(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                    Column(
+                      children: [
+                        IconButton(
+                          onPressed: () => addToCart(context),
+                          icon: Icon(Icons.shopping_cart),
+                          color: AppColors.primaryColor,
+                          iconSize: 24,
                         ),
-                      ),
-                      child: const Text(
-                        "Add To Cart",
-                        style: TextStyle(fontSize: 12, color: Colors.white),
-                      ),
+                        const Text(
+                          "Add To Cart",
+                          style: TextStyle(fontSize: 12, color: Colors.black),
+                        ),
+                      ],
                     ),
-                    ElevatedButton(
-                      onPressed: () => addToWishlist(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                    const SizedBox(width: 20), // Spacing between the buttons
+                    Column(
+                      children: [
+                        IconButton(
+                          onPressed: () => addToWishlist(context),
+                          icon: Icon(Icons.favorite_border),
+                          color: AppColors.primaryColor,
+                          iconSize: 24,
                         ),
-                      ),
-                      child: const Text(
-                        "Add Wishlist",
-                        style: TextStyle(fontSize: 12, color: Colors.white),
-                      ),
+                        const Text(
+                          "Add Wishlist",
+                          style: TextStyle(fontSize: 12, color: Colors.black),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -331,7 +369,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 imageURL:
                     "https://cdn4.iconfinder.com/data/icons/flat-color-sale-tag-set/512/Accounts_label_promotion_sale_tag_3-512.png",
               ),
-              FeaturedProduct(),
+              SimilerDeals(),
             ],
           ),
         ),

@@ -9,6 +9,7 @@ import 'package:yoo_local/screens/home/widgets/image_slider.dart';
 import 'package:yoo_local/screens/home/widgets/order_section.dart';
 import 'package:yoo_local/screens/home/widgets/search_products.dart';
 import 'package:yoo_local/screens/home/widgets/section_header.dart';
+import 'package:yoo_local/screens/home/widgets/similer_deals.dart';
 import 'package:yoo_local/widgets/location_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -126,8 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 imageURL:
                     "https://cdn-icons-png.freepik.com/512/8465/8465733.png",
               ),
-              FeaturedProduct(),
-              // SizedBox(height: 12),
+              SimilerDeals(), // SizedBox(height: 12),
               // SectionHeader(
               //   heading: "Best Selling Products",
               //   imageURL:

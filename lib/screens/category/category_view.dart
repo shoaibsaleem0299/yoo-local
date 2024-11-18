@@ -132,6 +132,14 @@ class CategoryCard extends StatelessWidget {
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primaryColor.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 6,
+              offset: Offset(0, 2), // Positioned the shadow
+            ),
+          ],
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
@@ -428,7 +436,7 @@ class _ResultScreenState extends State<ResultScreen> {
                         : double.parse(product['sale_price'] ?? "0.0")
                             .toStringAsFixed(2),
                     image: product['image_url'] ??
-                        'assets/images/default_image.png', // Default image
+                        'https://cdn.dribbble.com/users/4231105/screenshots/14089750/404_dribbble.png',
                     onTap: () {
                       Navigator.push(
                         context,
@@ -442,7 +450,13 @@ class _ResultScreenState extends State<ResultScreen> {
                                     .toStringAsFixed(2)
                                 : double.parse(product['sale_price'] ?? "0.0")
                                     .toStringAsFixed(2),
-                            image: product['images_urls'] ?? [],
+                            image: (product['images_urls']?.isEmpty ?? true)
+                                ? [
+                                    "https://cdn.dribbble.com/users/4231105/screenshots/14089750/404_dribbble.png",
+                                    "https://cdn.dribbble.com/users/4231105/screenshots/14089750/404_dribbble.png",
+                                    "https://cdn.dribbble.com/users/4231105/screenshots/14089750/404_dribbble.png"
+                                  ]
+                                : product['images_urls'],
                             description: product['description'] ??
                                 'No description available.',
                             quatity: 1,

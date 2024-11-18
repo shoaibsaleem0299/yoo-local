@@ -142,27 +142,70 @@ class _CartScreenState extends State<CartScreen> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: const Text('Cart'),
+          title: const Text('Cart', style: TextStyle(color: Colors.black)),
           centerTitle: true,
         ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text('No cart found'),
+              const Icon(
+                Icons.shopping_cart_outlined,
+                color: Colors.grey,
+                size: 60,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'No Cart Found',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
               const SizedBox(height: 10),
-              const Text('Please log in to view your cart'),
-              const SizedBox(height: 16),
-              AppButton(
-                title: "Login",
-                onTap: () {
+              const Text(
+                'Please log in to view your cart.',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton.icon(
+                onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => LoginView()),
                   ).then((_) {
-                    getUserCart();
+                    setState(() {
+                      isLoading = true;
+                      getUserCart();
+                    });
                   });
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryColor,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+                icon: const Icon(
+                  Icons.login,
+                  color: Colors.white,
+                ),
+                label: const Text(
+                  'Log In',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           ),
@@ -182,17 +225,56 @@ class _CartScreenState extends State<CartScreen> {
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text('Cart is empty'),
-              const SizedBox(height: 20), // Space between text and button
-              AppButton(
-                  title: "Explore to Shop",
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CategoryView()));
-                  })
+              const Icon(
+                Icons.shopping_cart_outlined,
+                color: Colors.grey,
+                size: 60,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Your Cart is Empty',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Explore our products and start shopping!',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CategoryView()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryColor,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+                child: const Text(
+                  'Explore to Shop',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -238,7 +320,8 @@ class _CartScreenState extends State<CartScreen> {
                               ),
                               child: Center(
                                 child: Image.network(
-                                  product['image_url'] ?? "unknown",
+                                  product['image_url'] ??
+                                      "https://cdn.dribbble.com/users/4231105/screenshots/14089750/404_dribbble.png",
                                   width: 60,
                                   height: 80,
                                   fit: BoxFit.contain,

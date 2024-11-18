@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:yoo_local/app_constant/app_colors.dart';
 import 'package:yoo_local/app_constant/app_constants.dart';
 import 'package:yoo_local/screens/shipping_track/widgets/tracking_details.dart';
@@ -86,7 +85,7 @@ class OrderDetailView extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'Tack Order: ',
+                    'Track Your Delivery Progress :',
                     style:
                         TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                   ),
@@ -106,7 +105,8 @@ class OrderDetailView extends StatelessWidget {
                       }
                     },
                     child: Text(
-                      "#${order['id'].toString()}",
+                      "${order['order_number'].toString()}",
+                      softWrap: true,
                       style: TextStyle(
                         fontSize: 16.0,
                         color: Colors.blue,
@@ -144,11 +144,17 @@ class OrderDetailView extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
-                            Text("Customer ID: ",
+                            Text("Customer Name: ",
                                 style: TextStyle(
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.bold)),
-                            Text("${order['customer_id'].toString()}",
+                            Text(
+                                order['customer_name']
+                                            ?.toString()
+                                            ?.isNotEmpty ??
+                                        false
+                                    ? order['customer_name'].toString()
+                                    : "Customer",
                                 style: TextStyle(fontSize: 14.0)),
                           ],
                         ),
@@ -200,7 +206,7 @@ class OrderDetailView extends StatelessWidget {
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.bold)),
                             Text(
-                                '${double.parse(order['total']).toStringAsFixed(2)}',
+                                '£${double.parse(order['total']).toStringAsFixed(2)}',
                                 style: TextStyle(fontSize: 14.0)),
                           ],
                         ),
@@ -213,7 +219,11 @@ class OrderDetailView extends StatelessWidget {
                                 style: TextStyle(
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.bold)),
-                            Text('${(order['discount']).toString()}',
+                            Text(
+                                (order['discount']?.toString()?.isNotEmpty ??
+                                        false)
+                                    ? "£${double.parse(order['discount'].toString()).toStringAsFixed(2)}"
+                                    : "0.0",
                                 style: TextStyle(fontSize: 14.0)),
                           ],
                         ),
@@ -229,12 +239,10 @@ class OrderDetailView extends StatelessWidget {
                               style: TextStyle(
                                   fontSize: 14.0, fontWeight: FontWeight.bold),
                             ),
-                            Expanded(
-                              child: Text(
-                                '${order['shipping_address']}',
-                                style: TextStyle(fontSize: 14.0),
-                                softWrap: true,
-                              ),
+                            Text(
+                              '${order['shipping_address']}',
+                              style: TextStyle(fontSize: 14.0),
+                              softWrap: true,
                             ),
                           ],
                         ),
@@ -303,7 +311,7 @@ class OrderDetailView extends StatelessWidget {
                                           fontSize: 14.0,
                                           fontWeight: FontWeight.bold)),
                                   Text(
-                                      "${(double.parse(item['pivot']['unit_price']) * item['pivot']['quantity']).toStringAsFixed(2)}",
+                                      "£${(double.parse(item['pivot']['unit_price']) * item['pivot']['quantity']).toStringAsFixed(2)}",
                                       style: TextStyle(fontSize: 14.0)),
                                 ],
                               ),

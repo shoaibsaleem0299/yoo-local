@@ -181,10 +181,10 @@ class SearchProductsView extends StatelessWidget {
             return ProductCard(
               name: product['title'] ?? 'Unknown',
               price: product['has_offer']
-                  ? double.parse(product['offer_price']).toStringAsFixed(2)
-                  : double.parse(product['sale_price'] ?? "0.0")
-                      .toStringAsFixed(2),
-              image: product['image_url'] ?? 'assets/images/default_image.png',
+                  ? "£${double.parse(product['offer_price']).toStringAsFixed(2)}"
+                  : "£${double.parse(product['sale_price'] ?? "0.0").toStringAsFixed(2)}",
+              image: product['image_url'] ??
+                  'https://cdn.dribbble.com/users/4231105/screenshots/14089750/404_dribbble.png',
               onTap: () {
                 Navigator.push(
                   context,
@@ -194,11 +194,15 @@ class SearchProductsView extends StatelessWidget {
                       productId: product['product_id'],
                       name: product['title'] ?? 'Unknown',
                       price: product['has_offer']
-                          ? double.parse(product['offer_price'])
-                              .toStringAsFixed(2)
-                          : double.parse(product['sale_price'] ?? "0.0")
-                              .toStringAsFixed(2),
-                      image: product['images_urls'] ?? [],
+                          ? "£${double.parse(product['offer_price']).toStringAsFixed(2)}"
+                          : "£${double.parse(product['sale_price'] ?? "0.0").toStringAsFixed(2)}",
+                      image: (product['images_urls']?.isEmpty ?? true)
+                          ? [
+                              "https://cdn.dribbble.com/users/4231105/screenshots/14089750/404_dribbble.png",
+                              "https://cdn.dribbble.com/users/4231105/screenshots/14089750/404_dribbble.png",
+                              "https://cdn.dribbble.com/users/4231105/screenshots/14089750/404_dribbble.png"
+                            ]
+                          : product['images_urls'],
                       description:
                           product['description'] ?? 'No description available.',
                       quatity: 1,

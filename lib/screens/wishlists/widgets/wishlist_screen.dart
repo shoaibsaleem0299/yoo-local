@@ -63,7 +63,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
     });
   }
 
-  Future<void> addToCart(int productId) async {
+  Future<void> addToCart(int productId, int inventoryId) async {
     var token = await LocalData.getString(AppConstants.userToken);
     try {
       String url = "${AppConstants.baseUrl}/cart/addToCart/$productId";
@@ -90,6 +90,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
             duration: const Duration(seconds: 3),
           ),
         );
+        removeWishlist(inventoryId, productId);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -225,10 +226,10 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                                 inventory['id']);
                                           },
                                           icon: Icon(Icons.remove_circle)),
-                                      const SizedBox(width: 4),
                                       Image.network(
-                                        inventory['image_url'] ?? 'unknown',
-                                        width: 80,
+                                        inventory['image_url'] ??
+                                            'https://cdn.dribbble.com/users/4231105/screenshots/14089750/404_dribbble.png',
+                                        width: 60,
                                         height: 120,
                                         errorBuilder:
                                             (context, error, stackTrace) {
@@ -273,7 +274,10 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                           ElevatedButton(
                                             onPressed: inStock
                                                 ? () {
-                                                    addToCart(inventory['id']);
+                                                    addToCart(
+                                                        inventory['id'],
+                                                        inventory[
+                                                            'product_id']);
                                                   }
                                                 : null,
                                             style: ElevatedButton.styleFrom(
@@ -315,39 +319,96 @@ class _WishlistScreenState extends State<WishlistScreen> {
                   : Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Text('Wishlist is empty'),
-                          const SizedBox(
-                              height: 20), // Space between text and button
-                          AppButton(
-                              title: "Explore to Shop",
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => CategoryView()));
-                              })
+                          const Icon(
+                            Icons.favorite_border,
+                            color: Colors.grey,
+                            size: 60,
+                          ),
+                          const SizedBox(height: 20),
+                          const Text(
+                            'Your Wishlist is Empty',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            'Explore our products and add them to your wishlist!',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 20),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CategoryView()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primaryColor,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            child: const Text(
+                              'Explore to Shop',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     )
               : Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      const Icon(
+                        Icons.favorite_border,
+                        color: Colors.grey,
+                        size: 60,
+                      ),
+                      const SizedBox(height: 20),
                       const Text(
-                        'No wishlist found',
+                        'No Wishlist Found',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
                       ),
                       const SizedBox(height: 10),
                       const Text(
-                        'Please log in to view your wishlist',
+                        'Please log in to view your wishlist.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
+                      const SizedBox(height: 20),
+                      ElevatedButton.icon(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginView())).then((_) {
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginView()),
+                          ).then((_) {
                             setState(() {
                               isLoading = true;
                               getUserWishlist();
@@ -357,11 +418,22 @@ class _WishlistScreenState extends State<WishlistScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primaryColor,
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
+                              horizontal: 24, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
                         ),
-                        child: const Text(
+                        icon: const Icon(
+                          Icons.login,
+                          color: Colors.white,
+                        ),
+                        label: const Text(
                           'Log In',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ],

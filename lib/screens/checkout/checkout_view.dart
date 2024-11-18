@@ -183,8 +183,29 @@ class _CheckoutViewState extends State<CheckoutView> {
                     children: [
                       const SectionTitle(title: 'Contact Information'),
                       const SizedBox(height: 16),
-                      _buildTextField(
-                          label: 'Email', controller: emailController),
+
+                      TextFormField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          labelText: "Email",
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your Email';
+                          }
+                          // Regular expression for validating an email address
+                          String pattern =
+                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+                          RegExp regex = RegExp(pattern);
+                          if (!regex.hasMatch(value)) {
+                            return 'Please enter a valid Email address';
+                          }
+                          return null;
+                        },
+                      ),
+                      // _buildTextField(
+                      //     label: 'Email', controller: emailController),
                       const SizedBox(height: 10),
                       Row(
                         children: [

@@ -38,6 +38,14 @@ class CategoryCard extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(12),
               color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primaryColor.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 8,
+                  offset: Offset(0, 4), // Positioned the shadow
+                ),
+              ],
             ),
             child: Center(
               child: Image.network(

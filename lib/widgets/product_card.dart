@@ -34,42 +34,45 @@ class ProductCard extends StatelessWidget {
                 width: 160,
                 height: 150,
                 decoration: BoxDecoration(
+                  color: Colors.white, // Adds a clean background for the image
                   border: Border.all(
                     color: AppColors.primaryColor,
                     width: 1.0,
                   ),
                   borderRadius: BorderRadius.circular(12),
-                ),
-                child: Stack(
-                  children: [
-                    Center(
-                      child: Image.network(
-                        image,
-                        width: 160,
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(
-                            Icons.broken_image,
-                            size: 40,
-                            color: Colors.grey,
-                          );
-                        },
-                      ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primaryColor.withOpacity(0.2),
+                      spreadRadius: 2,
+                      blurRadius: 8,
+                      offset: Offset(0, 4), // Positioned the shadow
                     ),
-                    // Positioned(
-                    //   top: 8.0,
-                    //   right: 8.0,
-                    //   child: IconButton(
-                    //     onPressed: onAddToFavorite,
-                    //     icon: Icon(
-                    //       Icons.favorite,
-                    //       color: isFavorite ? Colors.red : Colors.grey,
-                    //     ),
-                    //   ),
-                    // ),
                   ],
                 ),
+                child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(10), // Matches the container radius
+                  child: Padding(
+                    padding: const EdgeInsets.all(
+                        8.0), // Adds padding around the image
+                    child: Image.network(
+                      image,
+                      width:
+                          140, // Slightly less than container width for padding effect
+                      height: 130, // Adjusts height to avoid overflow
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(
+                          Icons.broken_image,
+                          size: 40,
+                          color: Colors.grey,
+                        );
+                      },
+                    ),
+                  ),
+                ),
               ),
+
               const SizedBox(height: 8),
               // Wrap the Row in an Expanded widget
               Expanded(

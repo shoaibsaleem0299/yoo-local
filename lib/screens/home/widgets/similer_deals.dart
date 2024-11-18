@@ -7,14 +7,14 @@ import 'package:yoo_local/ui_fuctionality/local_data.dart';
 import 'package:yoo_local/widgets/product_card.dart';
 import 'package:yoo_local/widgets/product_view.dart';
 
-class FeaturedProduct extends StatefulWidget {
-  const FeaturedProduct({super.key});
+class SimilerDeals extends StatefulWidget {
+  const SimilerDeals({super.key});
 
   @override
-  State<FeaturedProduct> createState() => _FeaturedProductState();
+  State<SimilerDeals> createState() => _SimilerDealsState();
 }
 
-class _FeaturedProductState extends State<FeaturedProduct> {
+class _SimilerDealsState extends State<SimilerDeals> {
   @override
   void initState() {
     super.initState();
@@ -104,7 +104,8 @@ class _FeaturedProductState extends State<FeaturedProduct> {
         height: 250.0,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: products.length,
+          itemCount:
+              products.length > 6 ? 6 : products.length,
           itemBuilder: (context, index) {
             final product = products[index];
             return Container(
@@ -123,8 +124,8 @@ class _FeaturedProductState extends State<FeaturedProduct> {
                       builder: (context) => ProductDetailScreen(
                         name: product['title'] ?? "item",
                         price: product['has_offer']
-                            ? "£${double.parse(product['offer_price']).toStringAsFixed(2)}"
-                            : "£${double.parse(product['sale_price'] ?? "0.0").toStringAsFixed(2)}",
+                    ? "£${double.parse(product['offer_price']).toStringAsFixed(2)}"
+                    : "£${double.parse(product['sale_price'] ?? "0.0").toStringAsFixed(2)}",
                         image: (product['images_urls']?.isEmpty ?? true)
                             ? [
                                 "https://cdn.dribbble.com/users/4231105/screenshots/14089750/404_dribbble.png",
