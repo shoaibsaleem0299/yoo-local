@@ -1,4 +1,4 @@
-package com.example.yoo_local
+package com.yooolocal.app
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

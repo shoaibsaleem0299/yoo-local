@@ -243,29 +243,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(height: 16.0),
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundImage: NetworkImage(profileData['imageUrl']!),
-                    ),
-                    SizedBox(height: 16.0),
-                    Text(
-                      username ?? 'Username',
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 6.0),
-                    Text(
-                      userEmail ?? 'userEmail@gmail.com',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: 24.0),
-                    Divider(color: AppColors.primaryColor.withOpacity(0.5)),
-                    SizedBox(height: 24.0),
                     Icon(
                       Icons.info_outline,
                       color: Colors.red,
